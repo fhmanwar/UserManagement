@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace API.Models
 {
-    [Table("TB_Trans_Log")]
-    public class LogActivity
+    [Table("TB_T_Log")]
+    public class Log
     {
         [Key]
         public int Id { get; set; }

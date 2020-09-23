@@ -10,9 +10,9 @@ namespace API.Models
     [Table("TB_M_Role")]
     public class Role : IdentityRole
     {
-        public DateTimeOffset CreateData { get; set; }
+        public DateTimeOffset CreateDate { get; set; }
         public DateTimeOffset UpdateDate { get; set; }
-        public DateTimeOffset DeleteData { get; set; }
+        public DateTimeOffset DeleteDate { get; set; }
         public bool isDelete { get; set; }
     }
 }

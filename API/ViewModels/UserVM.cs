@@ -10,9 +10,10 @@ namespace API.ViewModels
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public DateTimeOffset CreateData { get; set; }
+        public string Session { get; set; }
+        public DateTimeOffset CreateDate { get; set; }
         public DateTimeOffset UpdateDate { get; set; }
-        public DateTimeOffset DeleteData { get; set; }
+        public DateTimeOffset DeleteDate { get; set; }
         public bool isDelete { get; set; }
     }
 
@@ -29,5 +30,11 @@ namespace API.ViewModels
         public string RoleID { get; set; }
         public string RoleName { get; set; }
         public string VerifyCode { get; set; }
+    }
+
+    public class LogVM
+    {
+        public string Response { get; set; }
+        public string Email { get; set; }
     }
 }

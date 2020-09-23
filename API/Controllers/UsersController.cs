@@ -2,27 +2,21 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Mail;
-using System.Text;
 using System.Threading.Tasks;
 using API.Context;
 using API.Models;
-using API.Services;
 using API.ViewModels;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using System.Security.Claims;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authorization;
+using API.Repository.Data;
 
 namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     public class RolesController : ControllerBase
     {
         private readonly MyContext _context;
@@ -34,11 +28,10 @@ namespace API.Controllers
             _configuration = config;
         }
 
-        //[Authorize(AuthenticationSchemes = "Bearer")]
         [HttpGet]
-        public async Task<List<RoleVM>> GetAll()
+        public async Task<List<GetRoleVM>> GetAll()
         {
-            List<RoleVM> list = new List<RoleVM>();
+            List<GetRoleVM> list = new List<GetRoleVM>();
             var getData = await _context.Roles.Where(x => x.isDelete == false).ToListAsync();
             if (getData.Count == 0)
             {
@@ -46,33 +39,28 @@ namespace API.Controllers
             }
             foreach (var item in getData)
             {
-                var user = new RoleVM()
+                var user = new GetRoleVM()
                 {
                     Id = item.Id,
-                    Name = item.Name,
-                    CreateData = item.CreateData,
-                    UpdateDate = item.UpdateDate
+                    Name = item.Name
                 };
                 list.Add(user);
             }
             return list;
         }
 
-        //[Authorize(AuthenticationSchemes = "Bearer")]
         [HttpGet("{id}")]
-        public RoleVM GetID(string id)
+        public GetRoleVM GetID(string id)
         {
             var getData = _context.Roles.SingleOrDefault(x => x.Id == id);
             if (getData == null)
             {
                 return null;
             }
-            var role = new RoleVM()
+            var role = new GetRoleVM()
             {
                 Id = getData.Id,
-                Name = getData.Name,
-                CreateData = getData.CreateData,
-                UpdateDate = getData.UpdateDate
+                Name = getData.Name
             };
             return role;
         }
@@ -82,37 +70,50 @@ namespace API.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (roleVM.Session == null)
+                {
+                    return BadRequest("Session ID must be filled");
+                }
                 var role = new Role
                 {
                     Name = roleVM.Name,
-                    CreateData = DateTimeOffset.Now,
+                    CreateDate = DateTimeOffset.Now,
                     isDelete = false
                 };
                 _context.Roles.Add(role);
                 _context.SaveChanges();
+
+                var getData = _context.Users.SingleOrDefault(x => x.Id == roleVM.Session);
+                Sendlog(getData.Email + " Create Role Successfully", getData.Email);
+
                 return Ok("Successfully Created");
             }
             return BadRequest("Not Successfully");
         }
 
-        //[Authorize(AuthenticationSchemes = "Bearer")]
         [HttpPut("{id}")]
         public IActionResult Update(string id, RoleVM roleVM)
         {
             if (ModelState.IsValid)
             {
+                if (roleVM.Session == null)
+                {
+                    return BadRequest("Session ID must be filled");
+                }
                 var getData = _context.Roles.SingleOrDefault(x => x.Id == id);
                 getData.Name = roleVM.Name;
                 getData.UpdateDate = DateTimeOffset.Now;
 
                 _context.Roles.Update(getData);
                 _context.SaveChanges();
+
+                var getDataUser = _context.Users.SingleOrDefault(x => x.Id == roleVM.Session);
+                Sendlog(getDataUser.Email + " Update Role Successfully", getDataUser.Email);
                 return Ok("Successfully Updated");
             }
             return BadRequest("Not Successfully");
         }
 
-        //[Authorize(AuthenticationSchemes = "Bearer")]
         [HttpDelete("{id}")]
         public IActionResult Delete(string id)
         {
@@ -121,7 +122,7 @@ namespace API.Controllers
             {
                 return BadRequest("Not Successfully");
             }
-            getData.DeleteData = DateTimeOffset.Now;
+            getData.DeleteDate = DateTimeOffset.Now;
             getData.isDelete = true;
 
             _context.Entry(getData).State = EntityState.Modified;
@@ -129,29 +130,38 @@ namespace API.Controllers
             return Ok(new { msg = "Successfully Delete" });
         }
 
+        private IActionResult Sendlog(string response, string mail)
+        {
+            LogsController logsController = new LogsController(_context, _configuration);
+            var log = new LogVM
+            {
+                Response = response,
+                Email = mail
+            };
+            return logsController.Create(log);
+        }
     }
 
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     public class UsersController : ControllerBase
     {
         private readonly MyContext _context;
-        AttrEmail attrEmail = new AttrEmail();
-        RandomDigit randDig = new RandomDigit();
-        SmtpClient client = new SmtpClient();
         public IConfiguration _configuration;
+        UserRepository _repo;
 
-        public UsersController(MyContext myContext, IConfiguration config)
+        public UsersController(MyContext myContext, IConfiguration config, UserRepository repo)
         {
             _context = myContext;
             _configuration = config;
+            _repo = repo;
         }
 
-        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpGet]
-        public async Task<List<UserVM>> GetAll()
+        public async Task<List<GetUserVM>> GetAll()
         {
-            List<UserVM> list = new List<UserVM>();
+            List<GetUserVM> list = new List<GetUserVM>();
             var getData = await _context.UserRole.Include("Role").Include("User").Include(x => x.User.Employee).Where(x => x.User.Employee.isDelete == false).ToListAsync();
             if (getData.Count == 0)
             {
@@ -159,7 +169,7 @@ namespace API.Controllers
             }
             foreach (var item in getData)
             {
-                var user = new UserVM()
+                var user = new GetUserVM()
                 {
                     Id = item.User.Id,
                     Name = item.User.Employee.Name,
@@ -167,27 +177,29 @@ namespace API.Controllers
                     Site = item.User.Employee.AssignmentSite,
                     Email = item.User.Email,
                     Password = item.User.Password,
+                    RoleName = item.Role.Name,
                     Phone = item.User.Employee.Phone,
                     Address = item.User.Employee.Address,
-                    RoleID = item.Role.Id,
-                    RoleName = item.Role.Name,
-                    VerifyCode = item.User.VerifyCode,
+                    Province = item.User.Employee.Address,
+                    City = item.User.Employee.Address,
+                    SubDistrict = item.User.Employee.Address,
+                    Village = item.User.Employee.Address,
+                    ZipCode = item.User.Employee.Address,
                 };
                 list.Add(user);
             }
             return list;
         }
 
-        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpGet("{id}")]
-        public UserVM GetID(string id)
+        public GetUserVM GetID(string id)
         {
             var getData = _context.UserRole.Include("Role").Include("User").Include(x => x.User.Employee).SingleOrDefault(x => x.UserId == id);
             if (getData == null || getData.Role == null || getData.User == null)
             {
                 return null;
             }
-            var user = new UserVM()
+            var user = new GetUserVM()
             {
                 Id = getData.User.Id,
                 Name = getData.User.Employee.Name,
@@ -195,60 +207,83 @@ namespace API.Controllers
                 Site = getData.User.Employee.AssignmentSite,
                 Email = getData.User.Email,
                 Password = getData.User.Password,
+                RoleName = getData.Role.Name,
                 Phone = getData.User.Employee.Phone,
                 Address = getData.User.Employee.Address,
-                RoleID = getData.Role.Id,
-                RoleName = getData.Role.Name,
+                Province = getData.User.Employee.Address,
+                City = getData.User.Employee.Address,
+                SubDistrict = getData.User.Employee.Address,
+                Village = getData.User.Employee.Address,
+                ZipCode = getData.User.Employee.Address,
             };
             return user;
         }
 
         [HttpPost]
-        public IActionResult Create(UserVM userVM)
+        public IActionResult Create(GetUserVM getUserVM)
         {
-            if (ModelState.IsValid)
+            var getUser = _context.Users.Where(x => x.Email == getUserVM.Email);
+            if (getUser.Count() == 0)
             {
-                var user = new User
+                if (ModelState.IsValid)
                 {
-                    Email = userVM.Email,
-                    Password = Bcrypt.HashPassword(userVM.Password),
-                    VerifyCode = null,
-                };
-                _context.Users.Add(user);
-                //var checkRole = _context.Roles.SingleOrDefault(x => x.Name == "User");
-                var uRole = new UserRole
-                {
-                    UserId = user.Id,
-                    //RoleId = checkRole.Id
-                    RoleId = userVM.RoleID
-                };
-                _context.UserRole.Add(uRole);
-                var emp = new Employee
-                {
-                    EmpId = user.Id,
-                    Name = userVM.Name,
-                    NIK = userVM.NIK,
-                    AssignmentSite = userVM.Site,
-                    Phone = userVM.Phone,
-                    Address = userVM.Address,
-                    CreateData = DateTimeOffset.Now,
-                    isDelete = false
-                };
-                _context.Employees.Add(emp);
-                _context.SaveChanges();
-                return Ok("Successfully Created");
+                    if (getUserVM.Session == null)
+                    {
+                        return BadRequest("Session ID must be filled");
+                    }
+                    var user = new UserVM
+                    {
+                        Email = getUserVM.Email,
+                        Password = getUserVM.Password,
+                        VerifyCode = null,
+                    };
+                    var create = _repo.Create(user);
+                    if (create > 0)
+                    {
+                        var getUserId = getUser.SingleOrDefault();
+                        var getRoleId = _context.Roles.SingleOrDefault(x => x.Name == getUserVM.RoleName);
+                        var uRole = new UserRole
+                        {
+                            UserId = getUserId.Id,
+                            RoleId = getRoleId.Id
+                        };
+                        _context.UserRole.Add(uRole);
+                        var emp = new Employee
+                        {
+                            UserId = getUserId.Id,
+                            Name = getUserVM.Name,
+                            NIK = getUserVM.NIK,
+                            AssignmentSite = getUserVM.Site,
+                            Phone = getUserVM.Phone,
+                            Address = getUserVM.Address,
+                            CreateDate = DateTimeOffset.Now,
+                            isDelete = false
+                        };
+                        _context.Employees.Add(emp);
+                        _context.SaveChanges();
+
+                        var getData = _context.Users.SingleOrDefault(x => x.Id == getUserVM.Session);
+                        Sendlog(getData.Email + " Create User Successfully", getData.Email);
+
+                        return Ok("Successfully Created");
+                    }
+                    return BadRequest("Input User Not Successfully");                
+                }
+                return BadRequest("Not Successfully");
             }
-            return BadRequest("Not Successfully");
+            return BadRequest("Email Already Exists ");
         }
 
-        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpPut("{id}")]
-        public IActionResult Update(string id, UserVM userVM)
+        public IActionResult Update(string id, GetUserVM userVM)
         {
             if (ModelState.IsValid)
             {
+                if (userVM.Session == null)
+                {
+                    return BadRequest("Session ID must be filled");
+                }
                 var getData = _context.UserRole.Include("Role").Include("User").Include(x => x.User.Employee).SingleOrDefault(x => x.UserId == id);
-                //var getId = _context.Users.SingleOrDefault(x => x.Id == id);
                 getData.User.Employee.Name = userVM.Name;
                 getData.User.Employee.NIK = userVM.NIK;
                 getData.User.Employee.AssignmentSite = userVM.Site;
@@ -262,218 +297,53 @@ namespace API.Controllers
                         getData.User.Password = Bcrypt.HashPassword(userVM.Password);
                     }
                 }
-
-                if (userVM.RoleID != null)
+                if (userVM.RoleName != null)
                 {
-                    getData.RoleId = userVM.RoleID;
+                    var getRoleID = _context.Roles.SingleOrDefault(x => x.Name == userVM.RoleName);
+                    getData.RoleId = getRoleID.Id;
                 }
-
                 _context.UserRole.Update(getData);
                 _context.SaveChanges();
+
+                var getDataUser = _context.Users.SingleOrDefault(x => x.Id == userVM.Id);
+                Sendlog(getDataUser.Email + " Update User Successfully", getDataUser.Email);
+
                 return Ok("Successfully Updated");
             }
             return BadRequest("Not Successfully");
         }
 
-        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpDelete("{id}")]
         public IActionResult Delete(string id)
         {
-            var getData = _context.Employees.Include("User").SingleOrDefault(x => x.EmpId == id);
+            var getData = _context.Employees.Include("User").SingleOrDefault(x => x.UserId == id);
             if (getData == null)
             {
                 return BadRequest("Not Successfully");
             }
-            getData.DeleteData = DateTimeOffset.Now;
+            getData.DeleteDate = DateTimeOffset.Now;
             getData.isDelete = true;
 
             _context.Entry(getData).State = EntityState.Modified;
             _context.SaveChanges();
+
+            //var getDataUser = _context.Users.SingleOrDefault(x => x.Id == userVM.Id);
+            //Sendlog(getDataUser.Email + " Delete User Successfully", getDataUser.Email);
+
             return Ok(new { msg = "Successfully Delete" });
         }
 
-    }
-
-    [Route("api/[controller]")]
-    [ApiController]
-    public class AuthsController : ControllerBase
-    {
-        readonly MyContext _context;
-        AttrEmail attrEmail = new AttrEmail();
-        RandomDigit randDig = new RandomDigit();
-        SmtpClient client = new SmtpClient();
-        public IConfiguration _configuration;
-
-        public AuthsController(MyContext myContext, IConfiguration config)
+        private IActionResult Sendlog(string response, string mail)
         {
-            _context = myContext;
-            _configuration = config;
-        }
-
-        [HttpPost]
-        [Route("Register")]
-        public IActionResult Register(UserVM userVM)
-        {
-            if (ModelState.IsValid)
+            LogsController logsController = new LogsController(_context, _configuration);
+            var log = new LogVM
             {
-                client.Port = 587;
-                client.Host = "smtp.gmail.com";
-                client.EnableSsl = true;
-                client.Timeout = 10000;
-                client.DeliveryMethod = SmtpDeliveryMethod.Network;
-                client.UseDefaultCredentials = false;
-                client.Credentials = new NetworkCredential(attrEmail.mail, attrEmail.pass);
-
-                var code = randDig.GenerateRandom();
-                var fill = "Hi " + userVM.Name + "\n\n"
-                          + "Please verifty Code for this Apps : \n"
-                          + code
-                          + "\n\nThank You";
-
-                MailMessage mm = new MailMessage("donotreply@domain.com", userVM.Email, "Create Email", fill);
-                mm.BodyEncoding = UTF8Encoding.UTF8;
-                mm.DeliveryNotificationOptions = DeliveryNotificationOptions.OnFailure;
-                client.Send(mm);
-
-                var user = new User
-                {
-                    Email = userVM.Email,
-                    Password = Bcrypt.HashPassword(userVM.Password),
-                    VerifyCode = code,
-                };
-                _context.Users.Add(user);
-                var checkRole = _context.Roles.SingleOrDefault(x => x.Name == "User");
-                var uRole = new UserRole
-                {
-                    UserId = user.Id,
-                    RoleId = checkRole.Id
-                };
-                _context.UserRole.Add(uRole);
-                var emp = new Employee
-                {
-                    EmpId = user.Id,
-                    Name = userVM.Name,
-                    NIK = userVM.NIK,
-                    AssignmentSite = userVM.Site,
-                    Phone = userVM.Phone,
-                    Address = userVM.Address,
-                    CreateData = DateTimeOffset.Now,
-                    isDelete = false
-                };
-                _context.Employees.Add(emp);
-                _context.SaveChanges();
-                return Ok("Successfully Created");
-            }
-            return BadRequest("Not Successfully");
-            //UsersController _usersController = new UsersController(_context, _configuration);
-            //if (ModelState.IsValid)
-            //{
-            //    return _usersController.Create(userVM);
-            //}
-            //return BadRequest("Data Not Valid");
+                Response = response,
+                Email = mail
+            };
+            return logsController.Create(log);
         }
 
-        [HttpPost]
-        [Route("Login")]
-        public IActionResult Login(UserVM userVM)
-        {
-            if (ModelState.IsValid)
-            {
-                var getData = _context.UserRole.Include("Role").Include("User").Include(x => x.User.Employee).SingleOrDefault(x => x.User.Email == userVM.Email);
-                if (getData == null)
-                {
-                    return NotFound("Email Not Found");
-                }
-                else if (userVM.Password == null || userVM.Password.Equals(""))
-                {
-                    return BadRequest("Password must filled");
-                }
-                else if (!Bcrypt.Verify(userVM.Password, getData.User.Password))
-                {
-                    return BadRequest("Password is Wrong");
-                }
-                else
-                {
-                    if (getData != null)
-                    {
-                        var user = new UserVM()
-                        {
-                            Id = getData.User.Id,
-                            Name = getData.User.Employee.Name,
-                            NIK = getData.User.Employee.NIK,
-                            Site = getData.User.Employee.AssignmentSite,
-                            Email = getData.User.Email,
-                            Password = getData.User.Password,
-                            Phone = getData.User.Employee.Phone,
-                            Address = getData.User.Employee.Address,
-                            RoleID = getData.Role.Id,
-                            RoleName = getData.Role.Name,
-                            VerifyCode = getData.User.VerifyCode,
-                        };
-                        return Ok(GetJWT(user));
-                    }
-                    return BadRequest("Invalid credentials");
-                }
-            }
-            return BadRequest("Data Not Valid");
-        }
-
-        [HttpPost]
-        [Route("code")]
-        public IActionResult VerifyCode(UserVM userVM)
-        {
-            if (ModelState.IsValid)
-            {
-                var getData = _context.UserRole.Include("Role").Include("User").Include(x => x.User.Employee).SingleOrDefault(x => x.User.Email == userVM.Email);
-                if (getData == null)
-                {
-                    return NotFound();
-                }
-                else if (userVM.VerifyCode != getData.User.VerifyCode)
-                {
-                    return BadRequest("Your Code is Wrong");
-                }
-                else
-                {
-                    getData.User.VerifyCode = null;
-                    _context.SaveChanges();
-                    var user = new UserVM()
-                    {
-                        Id = getData.User.Id,
-                        Name = getData.User.Employee.Name,
-                        Email = getData.User.Email,
-                        Password = getData.User.Password,
-                        Phone = getData.User.Employee.Phone,
-                        RoleID = getData.Role.Id,
-                        RoleName = getData.Role.Name,
-                        VerifyCode = getData.User.VerifyCode,
-                    };
-                    return StatusCode(200, GetJWT(user));
-                }
-            }
-            return BadRequest("Data Not Valid");
-        }
-
-        private string GetJWT(UserVM userVM)
-        {
-            var claims = new List<Claim> {
-                            new Claim("Id", userVM.Id),
-                            new Claim("Name", userVM.Name),
-                            new Claim("Email", userVM.Email),
-                            new Claim("RoleName", userVM.RoleName),
-                            new Claim("VerifyCode", userVM.VerifyCode == null ? "" : userVM.VerifyCode),
-                        };
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
-            var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var token = new JwtSecurityToken(
-                            _configuration["Jwt:Issuer"],
-                            _configuration["Jwt:Audience"],
-                            claims,
-                            expires: DateTime.UtcNow.AddDays(1),
-                            signingCredentials: signIn
-                        );
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
     }
 
     [Route("api/[controller]")]
@@ -490,7 +360,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<List<LogActivity>> GetAll()
+        public async Task<List<Log>> GetAll()
         {
             var getData = await _context.LogActivities
                                 .Join(
@@ -504,10 +374,10 @@ namespace API.Controllers
             {
                 return null;
             }
-            List<LogActivity> list = new List<LogActivity>();
+            List<Log> list = new List<Log>();
             foreach (var item in getData)
             {
-                var log = new LogActivity()
+                var log = new Log()
                 {
                     Id = item.LogActivities.Id,
                     Response = item.LogActivities.Response,
@@ -520,14 +390,14 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(LogActivity logActivity)
+        public IActionResult Create(LogVM logVM)
         {
             if (ModelState.IsValid)
             {
-                var log = new LogActivity
+                var log = new Log
                 {
-                    Response = logActivity.Response,
-                    Email = logActivity.Email,
+                    Response = logVM.Response,
+                    Email = logVM.Email,
                     CreateDate = DateTimeOffset.Now
                 };
                 _context.LogActivities.Add(log);
