@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>@ViewData["Title"]</title>
+    <meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no' name='viewport' />
+    <link rel="shortcut icon" href="~/icon.ico" type="image/x-icon" />
+
+
+    <!-- CSS Files -->
+    <link href="~/css/handler/materialdesignicons.min.css" rel="stylesheet" />
+    <link href="~/css/handler/vendor.bundle.base.css" rel="stylesheet" />
+    <link href="~/css/handler/style.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="~/css/atlantis.min.css">
+    <link href="~/css/animated.css" rel="stylesheet" />
+
+</head>
+<body>
+
+    @RenderBody()
+
+
+    <script src="~/js/handler/vendor.bundle.base.js"></script>
+    <script src="~/js/handler/off-canvas.js"></script>
+    <script src="~/js/handler/hoverable-collapse.js"></script>
+    <script src="~/js/handler/misc.js"></script>
+
+    <script src="~/js/Plugin/bootstrap-notify.min.js"></script>
+
+    @RenderSection("Script", required: false)
+
+</body>
+</html>
