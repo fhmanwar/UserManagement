@@ -64,15 +64,16 @@ namespace API.Repository.Data
             }
         }
 
-        public int Update(UserVM userVM, int id)
+        public int Update(UserVM userVM, string id)
         {
             using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("myConnection")))
             {
                 var procName = "SP_Update_User";
                 parameters.Add("Id", id);
                 parameters.Add("Mail", userVM.Email);
-                parameters.Add("Pass", Bcrypt.HashPassword(userVM.Password));
+                parameters.Add("Pass", userVM.Password);
                 parameters.Add("Code", userVM.VerifyCode);
+                parameters.Add("Token", userVM.Token);
                 var Edit = connection.Execute(procName, parameters, commandType: CommandType.StoredProcedure);
                 return Edit;
             }
