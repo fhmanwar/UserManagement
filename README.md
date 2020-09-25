@@ -55,7 +55,7 @@
         
     - Role : 
         - `GET` ID : `http://{host}/api/roles/{id}/`
-        - `POST` : `http://{host}/api/roles/{id}/`
+        - `POST` : `http://{host}/api/roles/`
             ```json
                 {
                     "Name": "{Role Name}",
