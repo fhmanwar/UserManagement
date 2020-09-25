@@ -8,9 +8,9 @@ namespace API.Repository.Interface
     public interface IRepo<T> where T : class
     {
         Task<List<T>> GetAll();
-        Task<T> GetID(int Id);
+        Task<T> GetID(string Id);
         Task<int> Create(T entity);
         Task<int> Update(T entity);
-        Task<int> Delete(int Id);
+        Task<int> Delete(string Id);
     }
 }

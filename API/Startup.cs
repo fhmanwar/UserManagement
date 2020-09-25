@@ -35,6 +35,12 @@ namespace API
             services.AddDbContext<MyContext>(options => options.UseSqlServer(Configuration.GetConnectionString("myConnection")));
             services.AddScoped<RoleRepository>();
             services.AddScoped<UserRepository>();
+            services.AddScoped<DivisionRepository>();
+
+            services.AddScoped<AssetManageRepository>();
+            services.AddScoped<ExamRepository>();
+            services.AddScoped<ReimbursRepository>();
+            services.AddScoped<InterviewRepository>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => {
                 options.RequireHttpsMetadata = false;

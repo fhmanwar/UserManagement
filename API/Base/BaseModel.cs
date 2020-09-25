@@ -7,10 +7,10 @@ namespace API.Base
 {
     public interface BaseModel
     {
-        int Id { get; set; }
-        DateTimeOffset CreateData { get; set; }
+        string Id { get; set; }
+        DateTimeOffset CreateDate { get; set; }
         DateTimeOffset UpdateDate { get; set; }
-        DateTimeOffset DeleteData { get; set; }
+        DateTimeOffset DeleteDate { get; set; }
         bool isDelete { get; set; }
     }
 }

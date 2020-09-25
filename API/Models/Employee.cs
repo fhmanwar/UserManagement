@@ -15,10 +15,16 @@ namespace API.Models
         public string AssignmentSite { get; set; }
         public string Phone { get; set; }
         public string Address { get; set; }
+
+        [ForeignKey("Division")]
+        public string DivisionId { get; set; }
+
         public DateTimeOffset CreateDate { get; set; }
         public DateTimeOffset UpdateDate { get; set; }
         public DateTimeOffset DeleteDate { get; set; }
         public bool isDelete { get; set; }
+        
         public User User { get; set; }
+        public Division Division { get; set; }
     }
 }

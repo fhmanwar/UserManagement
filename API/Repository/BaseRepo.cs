@@ -18,27 +18,6 @@ namespace API.Repository
         {
             _context = context;
         }
-        public async Task<int> Create(TEntity entity)
-        {
-            entity.CreateData = DateTimeOffset.Now;
-            entity.isDelete = false;
-            await _context.Set<TEntity>().AddAsync(entity);
-            var createItem = await _context.SaveChangesAsync();
-            return createItem;
-        }
-
-        public async Task<int> Delete(int Id)
-        {
-            var data = await GetID(Id);
-            if (data == null)
-            {
-                return 0;
-            }
-            data.DeleteData = DateTimeOffset.Now;
-            data.isDelete = true;
-            _context.Entry(data).State = EntityState.Modified;
-            return await _context.SaveChangesAsync();
-        }
 
         public virtual async Task<List<TEntity>> GetAll()
         {
@@ -50,7 +29,7 @@ namespace API.Repository
             return null;
         }
 
-        public virtual async Task<TEntity> GetID(int Id)
+        public virtual async Task<TEntity> GetID(string Id)
         {
             var data = await _context.Set<TEntity>().SingleOrDefaultAsync(x => x.Id == Id && x.isDelete == false);
             if (!data.Equals(0))
@@ -58,6 +37,28 @@ namespace API.Repository
                 return data;
             }
             return null;
+        }
+
+        public async Task<int> Create(TEntity entity)
+        {
+            entity.CreateDate = DateTimeOffset.Now;
+            entity.isDelete = false;
+            await _context.Set<TEntity>().AddAsync(entity);
+            var createItem = await _context.SaveChangesAsync();
+            return createItem;
+        }
+
+        public async Task<int> Delete(string Id)
+        {
+            var data = await GetID(Id);
+            if (data == null)
+            {
+                return 0;
+            }
+            data.DeleteDate = DateTimeOffset.Now;
+            data.isDelete = true;
+            _context.Entry(data).State = EntityState.Modified;
+            return await _context.SaveChangesAsync();
         }
 
         public async Task<int> Update(TEntity entity)

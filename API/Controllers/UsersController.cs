@@ -21,11 +21,13 @@ namespace API.Controllers
     {
         private readonly MyContext _context;
         public IConfiguration _configuration;
+        RoleRepository _repo;
 
-        public RolesController(MyContext myContext, IConfiguration config)
+        public RolesController(MyContext myContext, IConfiguration config, RoleRepository _repo)
         {
             _context = myContext;
             _configuration = config;
+            this._repo = _repo;
         }
 
         [HttpGet]
@@ -74,19 +76,20 @@ namespace API.Controllers
                 {
                     return BadRequest("Session ID must be filled");
                 }
-                var role = new Role
+                var role = new RoleVM
                 {
-                    Name = roleVM.Name,
-                    CreateDate = DateTimeOffset.Now,
-                    isDelete = false
+                    Name = roleVM.Name
                 };
-                _context.Roles.Add(role);
-                _context.SaveChanges();
+                var create = _repo.Create(role);
+                if (create > 0)
+                {
+                    var getData = _context.Users.SingleOrDefault(x => x.Id == roleVM.Session);
+                    Sendlog(getData.Email + " Create Role Successfully", getData.Email);
 
-                var getData = _context.Users.SingleOrDefault(x => x.Id == roleVM.Session);
-                Sendlog(getData.Email + " Create Role Successfully", getData.Email);
+                    return Ok("Successfully Created");
+                }
+                return BadRequest("Not Successfully");
 
-                return Ok("Successfully Created");
             }
             return BadRequest("Not Successfully");
         }

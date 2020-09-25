@@ -24,7 +24,7 @@ namespace API.Base
         public async Task<IEnumerable<TEntity>> GetAll() => await _repo.GetAll();
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<TEntity>> GetId(int Id) => await _repo.GetID(Id);
+        public async Task<ActionResult<TEntity>> GetId(string Id) => await _repo.GetID(Id);
 
         [HttpPost]
         public async Task<ActionResult<TEntity>> Create(TEntity entity)
@@ -38,7 +38,7 @@ namespace API.Base
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<int>> Delete(int Id)
+        public async Task<ActionResult<int>> Delete(string Id)
         {
             var data = await _repo.Delete(Id);
             if (data.Equals(null))
