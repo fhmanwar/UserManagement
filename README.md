@@ -37,24 +37,8 @@
         - `DELETE` : `http://{host}/api/divisions/{id}/`
     
 2. Using Dapper :
-    - User : 
-        - `POST` USers : `http://{host}/api/Users/`
-        ```json
-            {
-                "Password": "{Password}",
-            }
-        ```
-
     - Role : 
-        - `GET` All Asset Management: `http://{host}/api/users/`
-        - `GET` ID Asset Management: `http://{host}/api/users/{id}/`
-        - `POST` Reset Password : `http://{host}/api/auths/forgot/`
-
-        ```json
-            {
-                "Password": "{Password}",
-            }
-        ```
+        - `GET` All Role: `http://{host}/api/roles/`
     
 
 
@@ -89,13 +73,6 @@
 
 
 
-- `GET` ID Asset Management: `http://{host}/api/users/{id}`
-
-```json
-    {
-        "Password": "{Email User}",
-    }
-```
 
 ### User Management
 
@@ -121,7 +98,7 @@
         }
     ```
 
-- `POST` Users : `http://{host}/api/Users/`
+- `PUT` Users : `http://{host}/api/Users/`
     ```json
         {
             "name": "{Name}",
