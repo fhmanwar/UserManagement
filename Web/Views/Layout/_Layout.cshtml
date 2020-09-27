@@ -1,6 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Http
 @{
-    var userId = Context.Session.GetString("id");;
+    var userId = Context.Session.GetString("id");
+    var name = Context.Session.GetString("name");
+    var email = Context.Session.GetString("email");
     var level = Context.Session.GetString("lvl");
     if (level == null && userId == null)
     {
@@ -205,8 +207,8 @@
                         <div class="info">
                             <a data-toggle="collapse" href="#collapseExample" aria-expanded="true">
                                 <span>
-                                    Admin
-                                    <span class="user-level">Administrator</span>
+                                    @name
+                                    <span class="user-level">@level</span>
                                     <span class="caret"></span>
                                 </span>
                             </a>
@@ -225,7 +227,7 @@
                     </div>
 
                     <ul class="nav nav-primary">
-                        <li class="nav-item active">
+                        <li class="nav-item">
                             <a href="/" class="collapsed">
                                 <i class="fas fa-home"></i>
                                 <p>Dashboard</p>
@@ -237,46 +239,34 @@
                             </span>
                             <h4 class="text-section">Components</h4>
                         </li>
+
                         <li class="nav-item">
-                            <a data-toggle="collapse" href="#base">
+                            <a data-toggle="collapse" href="#sidebarLayouts">
                                 <i class="fas fa-layer-group"></i>
-                                <p>Base</p>
+                                <p>User Different Apps</p>
                                 <span class="caret"></span>
                             </a>
-                            <div class="collapse" id="base">
+                            <div class="collapse" id="sidebarLayouts">
                                 <ul class="nav nav-collapse">
-                                    <li>
-                                        <a href="components/avatars.html">
-                                            <span class="sub-item">Avatars</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="components/buttons.html">
-                                            <span class="sub-item">Buttons</span>
-                                        </a>
-                                    </li>
+                                    <li><a href="#"><span class="sub-item">Asset Management</span></a></li>
+                                    <li><a href="#"><span class="sub-item">Exam Online</span></a></li>
+                                    <li><a href="#"><span class="sub-item">Interview & Placement</span></a></li>
+                                    <li><a href="#"><span class="sub-item">Reimbursement Parking</span></a></li>
                                 </ul>
                             </div>
                         </li>
 
                         <li class="nav-item">
-                            <a data-toggle="collapse" href="#sidebarLayouts">
+                            <a data-toggle="collapse" href="#base">
                                 <i class="fas fa-th-list"></i>
-                                <p>Sidebar Layouts</p>
+                                <p>User Management</p>
                                 <span class="caret"></span>
                             </a>
-                            <div class="collapse" id="sidebarLayouts">
+                            <div class="collapse" id="base">
                                 <ul class="nav nav-collapse">
-                                    <li>
-                                        <a href="#">
-                                            <span class="sub-item">Sidebar Style 1</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <span class="sub-item">Overlay Sidebar</span>
-                                        </a>
-                                    </li>
+                                    <li><a href="/account"><span class="sub-item">Users</span></a></li>
+                                    <li><a href="/role"><span class="sub-item">Roles</span></a></li>
+                                    <li><a href="#"><span class="sub-item">Address</span></a></li>
                                 </ul>
                             </div>
                         </li>
@@ -285,6 +275,13 @@
                             <a href="/account">
                                 <i class="fas fa-users-cog"></i>
                                 <p>Users & Roles</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="/division">
+                                <i class="fas fa-fw fa-building"></i>
+                                <p>Divisions</p>
                             </a>
                         </li>
 
@@ -329,58 +326,65 @@
     <script src="~/js/plugin/sweetalert2@9.js"></script>
 
     <script src="~/js/plugin/circles.min.js"></script>
-
     <!-- Atlantis JS -->
     <script src="~/js/Plugin/atlantis.min.js"></script>
 
+
     @RenderSection("Script", required: false)
 
-    <script>
-        Circles.create({
-            id: 'circles-1',
-            radius: 45,
-            value: 60,
-            maxValue: 100,
-            width: 7,
-            text: 5,
-            colors: ['#f1f1f1', '#FF9E27'],
-            duration: 400,
-            wrpClass: 'circles-wrp',
-            textClass: 'circles-text',
-            styleWrapper: true,
-            styleText: true
-        })
+<script>
+    $(function () {
+        $('.nav a').filter(function () { return this.href == location.href }).parent().addClass('active').siblings().removeClass('active');
+        $('.nav a').click(function () {
+            $(this).parent().addClass('active').siblings().removeClass('active');
+        });
+    })
 
-        Circles.create({
-            id: 'circles-2',
-            radius: 45,
-            value: 70,
-            maxValue: 100,
-            width: 7,
-            text: 36,
-            colors: ['#f1f1f1', '#2BB930'],
-            duration: 400,
-            wrpClass: 'circles-wrp',
-            textClass: 'circles-text',
-            styleWrapper: true,
-            styleText: true
-        })
+    Circles.create({
+        id: 'circles-1',
+        radius: 45,
+        value: 60,
+        maxValue: 100,
+        width: 7,
+        text: 5,
+        colors: ['#f1f1f1', '#FF9E27'],
+        duration: 400,
+        wrpClass: 'circles-wrp',
+        textClass: 'circles-text',
+        styleWrapper: true,
+        styleText: true
+    })
 
-        Circles.create({
-            id: 'circles-3',
-            radius: 45,
-            value: 40,
-            maxValue: 100,
-            width: 7,
-            text: 12,
-            colors: ['#f1f1f1', '#F25961'],
-            duration: 400,
-            wrpClass: 'circles-wrp',
-            textClass: 'circles-text',
-            styleWrapper: true,
-            styleText: true
-        })
+    Circles.create({
+        id: 'circles-2',
+        radius: 45,
+        value: 70,
+        maxValue: 100,
+        width: 7,
+        text: 36,
+        colors: ['#f1f1f1', '#2BB930'],
+        duration: 400,
+        wrpClass: 'circles-wrp',
+        textClass: 'circles-text',
+        styleWrapper: true,
+        styleText: true
+    })
 
-    </script>
+    Circles.create({
+        id: 'circles-3',
+        radius: 45,
+        value: 40,
+        maxValue: 100,
+        width: 7,
+        text: 12,
+        colors: ['#f1f1f1', '#F25961'],
+        duration: 400,
+        wrpClass: 'circles-wrp',
+        textClass: 'circles-text',
+        styleWrapper: true,
+        styleText: true
+    })
+
+</script>
 </body>
 </html>

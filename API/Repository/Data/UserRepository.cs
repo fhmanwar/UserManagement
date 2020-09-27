@@ -20,23 +20,23 @@ namespace API.Repository.Data
             _configuration = configuration;
         }
 
-        public async Task<IEnumerable<RoleVM>> getAll()
+        public async Task<IEnumerable<GetRoleVM>> getAll()
         {
             using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("myConnection")))
             {
                 var procName = "SP_GetAll_Role";
-                var getAll = await connection.QueryAsync<RoleVM>(procName, commandType: CommandType.StoredProcedure);
+                var getAll = await connection.QueryAsync<GetRoleVM>(procName, commandType: CommandType.StoredProcedure);
                 return getAll;
             }
         }
 
-        public RoleVM getID(int id)
+        public GetRoleVM getID(string id)
         {
             using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("myConnection")))
             {
                 var procName = "SP_GetID_Role";
                 parameters.Add("id", id);
-                var getId = connection.Query<RoleVM>(procName, parameters, commandType: CommandType.StoredProcedure).SingleOrDefault();
+                var getId = connection.Query<GetRoleVM>(procName, parameters, commandType: CommandType.StoredProcedure).SingleOrDefault();
                 return getId;
             }
         }
@@ -53,7 +53,7 @@ namespace API.Repository.Data
             }
         }
 
-        public int Update(RoleVM roleVM, int id)
+        public int Update(RoleVM roleVM, string id)
         {
             using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("myConnection")))
             {
@@ -65,7 +65,7 @@ namespace API.Repository.Data
             }
         }
 
-        public int Delete(int id)
+        public int Delete(string id)
         {
             using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("myConnection")))
             {
@@ -87,23 +87,23 @@ namespace API.Repository.Data
             _configuration = configuration;
         }
 
-        public async Task<IEnumerable<UserVM>> getAll()
+        public async Task<IEnumerable<GetUserVM>> getAll()
         {
             using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("myConnection")))
             {
                 var procName = "SP_GetAll_User";
-                var getAll = await connection.QueryAsync<UserVM>(procName, commandType: CommandType.StoredProcedure);
+                var getAll = await connection.QueryAsync<GetUserVM>(procName, commandType: CommandType.StoredProcedure);
                 return getAll;
             }
         }
 
-        public UserVM getID(int id)
+        public GetUserVM getID(string id)
         {
             using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("myConnection")))
             {
                 var procName = "SP_GetID_User";
                 parameters.Add("id", id);
-                var getId = connection.Query<UserVM>(procName, parameters, commandType: CommandType.StoredProcedure).SingleOrDefault();
+                var getId = connection.Query<GetUserVM>(procName, parameters, commandType: CommandType.StoredProcedure).SingleOrDefault();
                 return getId;
             }
         }
@@ -136,7 +136,7 @@ namespace API.Repository.Data
             }
         }
 
-        public int Delete(int id)
+        public int Delete(string id)
         {
             using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("myConnection")))
             {

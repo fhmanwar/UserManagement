@@ -15,6 +15,11 @@ namespace API.Models
         public string AssignmentSite { get; set; }
         public string Phone { get; set; }
         public string Address { get; set; }
+        public string Province { get; set; }
+        public string City { get; set; }
+        public string SubDistrict { get; set; }
+        public string Village { get; set; }
+        public string ZipCode { get; set; }
 
         [ForeignKey("Division")]
         public string DivisionId { get; set; }

@@ -31,88 +31,65 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<List<GetRoleVM>> GetAll()
-        {
-            List<GetRoleVM> list = new List<GetRoleVM>();
-            var getData = await _context.Roles.Where(x => x.isDelete == false).ToListAsync();
-            if (getData.Count == 0)
-            {
-                return null;
-            }
-            foreach (var item in getData)
-            {
-                var user = new GetRoleVM()
-                {
-                    Id = item.Id,
-                    Name = item.Name
-                };
-                list.Add(user);
-            }
-            return list;
-        }
+        public async Task<IEnumerable<GetRoleVM>> GetAll() => await _repo.getAll();
 
         [HttpGet("{id}")]
-        public GetRoleVM GetID(string id)
-        {
-            var getData = _context.Roles.SingleOrDefault(x => x.Id == id);
-            if (getData == null)
-            {
-                return null;
-            }
-            var role = new GetRoleVM()
-            {
-                Id = getData.Id,
-                Name = getData.Name
-            };
-            return role;
-        }
+        public GetRoleVM GetID(string id) => _repo.getID(id);
 
         [HttpPost]
-        public IActionResult Create(RoleVM roleVM)
+        public IActionResult Create(GetRoleVM dataVM)
         {
             if (ModelState.IsValid)
             {
-                if (roleVM.Session == null)
+                if (dataVM.Session == null)
                 {
                     return BadRequest("Session ID must be filled");
                 }
-                var role = new RoleVM
+                var getSession = _context.Users.SingleOrDefault(x => x.Id == dataVM.Session);
+                if (getSession != null)
                 {
-                    Name = roleVM.Name
-                };
-                var create = _repo.Create(role);
-                if (create > 0)
-                {
-                    var getData = _context.Users.SingleOrDefault(x => x.Id == roleVM.Session);
-                    Sendlog(getData.Email + " Create Role Successfully", getData.Email);
+                    var role = new RoleVM
+                    {
+                        Name = dataVM.Name
+                    };
+                    var create = _repo.Create(role);
+                    if (create > 0)
+                    {
+                        Sendlog(getSession.Email + " Create Role Successfully", getSession.Email);
 
-                    return Ok("Successfully Created");
+                        return Ok("Successfully Created");
+                    }
+                    return BadRequest("Not Successfully");
                 }
-                return BadRequest("Not Successfully");
+                return BadRequest("You Don't Have Access");
 
             }
             return BadRequest("Not Successfully");
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(string id, RoleVM roleVM)
+        public IActionResult Update(string id, GetRoleVM dataVM)
         {
             if (ModelState.IsValid)
             {
-                if (roleVM.Session == null)
+                if (dataVM.Session == null)
                 {
                     return BadRequest("Session ID must be filled");
                 }
-                var getData = _context.Roles.SingleOrDefault(x => x.Id == id);
-                getData.Name = roleVM.Name;
-                getData.UpdateDate = DateTimeOffset.Now;
+                var getSession = _context.Users.SingleOrDefault(x => x.Id == dataVM.Session);
+                if (getSession != null)
+                {
+                    var getData = _context.Roles.SingleOrDefault(x => x.Id == id);
+                    getData.Name = dataVM.Name;
+                    getData.UpdateDate = DateTimeOffset.Now;
 
-                _context.Roles.Update(getData);
-                _context.SaveChanges();
+                    _context.Roles.Update(getData);
+                    _context.SaveChanges();
 
-                var getDataUser = _context.Users.SingleOrDefault(x => x.Id == roleVM.Session);
-                Sendlog(getDataUser.Email + " Update Role Successfully", getDataUser.Email);
-                return Ok("Successfully Updated");
+                    Sendlog(getSession.Email + " Update Role Successfully", getSession.Email);
+                    return Ok("Successfully Updated");
+                }
+                return BadRequest("You Don't Have Access");
             }
             return BadRequest("Not Successfully");
         }
@@ -162,65 +139,10 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<List<GetUserVM>> GetAll()
-        {
-            List<GetUserVM> list = new List<GetUserVM>();
-            var getData = await _context.UserRole.Include("Role").Include("User").Include(x => x.User.Employee).Where(x => x.User.Employee.isDelete == false).ToListAsync();
-            if (getData.Count == 0)
-            {
-                return null;
-            }
-            foreach (var item in getData)
-            {
-                var user = new GetUserVM()
-                {
-                    Id = item.User.Id,
-                    Name = item.User.Employee.Name,
-                    NIK = item.User.Employee.NIK,
-                    Site = item.User.Employee.AssignmentSite,
-                    Email = item.User.Email,
-                    Password = item.User.Password,
-                    RoleName = item.Role.Name,
-                    Phone = item.User.Employee.Phone,
-                    Address = item.User.Employee.Address,
-                    Province = item.User.Employee.Address,
-                    City = item.User.Employee.Address,
-                    SubDistrict = item.User.Employee.Address,
-                    Village = item.User.Employee.Address,
-                    ZipCode = item.User.Employee.Address,
-                };
-                list.Add(user);
-            }
-            return list;
-        }
+        public async Task<IEnumerable<GetUserVM>> GetAll() => await _repo.getAll();
 
         [HttpGet("{id}")]
-        public GetUserVM GetID(string id)
-        {
-            var getData = _context.UserRole.Include("Role").Include("User").Include(x => x.User.Employee).SingleOrDefault(x => x.UserId == id);
-            if (getData == null || getData.Role == null || getData.User == null)
-            {
-                return null;
-            }
-            var user = new GetUserVM()
-            {
-                Id = getData.User.Id,
-                Name = getData.User.Employee.Name,
-                NIK = getData.User.Employee.NIK,
-                Site = getData.User.Employee.AssignmentSite,
-                Email = getData.User.Email,
-                Password = getData.User.Password,
-                RoleName = getData.Role.Name,
-                Phone = getData.User.Employee.Phone,
-                Address = getData.User.Employee.Address,
-                Province = getData.User.Employee.Address,
-                City = getData.User.Employee.Address,
-                SubDistrict = getData.User.Employee.Address,
-                Village = getData.User.Employee.Address,
-                ZipCode = getData.User.Employee.Address,
-            };
-            return user;
-        }
+        public GetUserVM GetID(string id) => _repo.getID(id);
 
         [HttpPost]
         public IActionResult Create(GetUserVM getUserVM)
@@ -234,43 +156,53 @@ namespace API.Controllers
                     {
                         return BadRequest("Session ID must be filled");
                     }
-                    var user = new UserVM
+                    var getSession = _context.Users.SingleOrDefault(x => x.Id == getUserVM.Session);
+                    if (getSession != null)
                     {
-                        Email = getUserVM.Email,
-                        Password = getUserVM.Password,
-                        VerifyCode = null,
-                    };
-                    var create = _repo.Create(user);
-                    if (create > 0)
-                    {
-                        var getUserId = getUser.SingleOrDefault();
-                        var getRoleId = _context.Roles.SingleOrDefault(x => x.Name == getUserVM.RoleName);
-                        var uRole = new UserRole
+                        var user = new UserVM
                         {
-                            UserId = getUserId.Id,
-                            RoleId = getRoleId.Id
+                            Email = getUserVM.Email,
+                            Password = getUserVM.Password,
+                            VerifyCode = null,
                         };
-                        _context.UserRole.Add(uRole);
-                        var emp = new Employee
+                        var create = _repo.Create(user);
+                        if (create > 0)
                         {
-                            UserId = getUserId.Id,
-                            Name = getUserVM.Name,
-                            NIK = getUserVM.NIK,
-                            AssignmentSite = getUserVM.Site,
-                            Phone = getUserVM.Phone,
-                            Address = getUserVM.Address,
-                            CreateDate = DateTimeOffset.Now,
-                            isDelete = false
-                        };
-                        _context.Employees.Add(emp);
-                        _context.SaveChanges();
+                            var getUserId = getUser.SingleOrDefault();
+                            var getRoleId = _context.Roles.SingleOrDefault(x => x.Name == getUserVM.RoleName);
+                            var uRole = new UserRole
+                            {
+                                UserId = getUserId.Id,
+                                RoleId = getRoleId.Id
+                            };
+                            _context.UserRole.Add(uRole);
+                            var emp = new Employee
+                            {
+                                UserId = getUserId.Id,
+                                Name = getUserVM.Name,
+                                NIK = getUserVM.NIK,
+                                AssignmentSite = getUserVM.Site,
+                                Phone = getUserVM.Phone,
+                                Address = getUserVM.Address,
+                                Province = getUserVM.Province,
+                                City = getUserVM.City,
+                                SubDistrict = getUserVM.SubDistrict,
+                                Village = getUserVM.Village,
+                                ZipCode = getUserVM.ZipCode,
+                                DivisionId = getUserVM.DivisionID,
+                                CreateDate = DateTimeOffset.Now,
+                                isDelete = false
+                            };
+                            _context.Employees.Add(emp);
+                            _context.SaveChanges();
 
-                        var getData = _context.Users.SingleOrDefault(x => x.Id == getUserVM.Session);
-                        Sendlog(getData.Email + " Create User Successfully", getData.Email);
+                            Sendlog(getSession.Email + " Create User Successfully", getSession.Email);
 
-                        return Ok("Successfully Created");
+                            return Ok("Successfully Created");
+                        }
+                        return BadRequest("Input User Not Successfully");
                     }
-                    return BadRequest("Input User Not Successfully");                
+                    return BadRequest("You Don't Have access");
                 }
                 return BadRequest("Not Successfully");
             }
@@ -278,40 +210,51 @@ namespace API.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(string id, GetUserVM userVM)
+        public IActionResult Update(string id, GetUserVM dataVM)
         {
             if (ModelState.IsValid)
             {
-                if (userVM.Session == null)
+                if (dataVM.Session == null)
                 {
                     return BadRequest("Session ID must be filled");
                 }
-                var getData = _context.UserRole.Include("Role").Include("User").Include(x => x.User.Employee).SingleOrDefault(x => x.UserId == id);
-                getData.User.Employee.Name = userVM.Name;
-                getData.User.Employee.NIK = userVM.NIK;
-                getData.User.Employee.AssignmentSite = userVM.Site;
-                getData.User.Employee.Phone = userVM.Phone;
-                getData.User.Employee.Address = userVM.Address;
-                getData.User.Email = userVM.Email;
-                if (userVM.Password != null)
+                var getSession = _context.Users.SingleOrDefault(x => x.Id == dataVM.Session);
+                if (getSession != null)
                 {
-                    if (!Bcrypt.Verify(userVM.Password, getData.User.Password))
+                    var getData = _context.UserRole.Include("Role").Include("User").Include(x => x.User.Employee).SingleOrDefault(x => x.UserId == id);
+                    getData.User.Employee.Name = dataVM.Name;
+                    getData.User.Employee.NIK = dataVM.NIK;
+                    getData.User.Employee.AssignmentSite = dataVM.Site;
+                    getData.User.Employee.Phone = dataVM.Phone;
+                    getData.User.Employee.Address = dataVM.Address;
+                    getData.User.Employee.Province = dataVM.Province;
+                    getData.User.Employee.City = dataVM.City;
+                    getData.User.Employee.SubDistrict = dataVM.SubDistrict;
+                    getData.User.Employee.Village = dataVM.Village;
+                    getData.User.Employee.ZipCode = dataVM.ZipCode;
+                    getData.User.Employee.DivisionId = dataVM.DivisionID;
+                    getData.User.Email = dataVM.Email;
+                    if (dataVM.Password != null)
                     {
-                        getData.User.Password = Bcrypt.HashPassword(userVM.Password);
+                        if (!Bcrypt.Verify(dataVM.Password, getData.User.Password))
+                        {
+                            getData.User.Password = Bcrypt.HashPassword(dataVM.Password);
+                        }
                     }
-                }
-                if (userVM.RoleName != null)
-                {
-                    var getRoleID = _context.Roles.SingleOrDefault(x => x.Name == userVM.RoleName);
-                    getData.RoleId = getRoleID.Id;
-                }
-                _context.UserRole.Update(getData);
-                _context.SaveChanges();
+                    if (dataVM.RoleName != null)
+                    {
+                        var getRoleID = _context.Roles.SingleOrDefault(x => x.Name == dataVM.RoleName);
+                        getData.RoleId = getRoleID.Id;
+                    }
+                    _context.UserRole.Update(getData);
+                    _context.SaveChanges();
 
-                var getDataUser = _context.Users.SingleOrDefault(x => x.Id == userVM.Id);
-                Sendlog(getDataUser.Email + " Update User Successfully", getDataUser.Email);
+                
+                    Sendlog(getSession.Email + " Update User Successfully", getSession.Email);
 
-                return Ok("Successfully Updated");
+                    return Ok("Successfully Updated");
+                }
+                return BadRequest("You Don't Have access");
             }
             return BadRequest("Not Successfully");
         }
