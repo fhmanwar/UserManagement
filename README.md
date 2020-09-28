@@ -225,12 +225,20 @@
 
 - `ERD` Scheme
 
-![picture](SDLC/ERD_PostSeminarFeedback.jpg)
+![picture](SDLC/ERD_UserManagement.png)
 
 - `Use Case Diagram` Scheme
 
-![picture](SDLC/UCD_PostSeminarFeedback.jpg)
+![picture](SDLC/UCD_UserManagement.png)
 
 - `BPMN` Scheme
 
-![picture](SDLC/BPMN_PostSeminarFeedback.png)
+![picture](SDLC/BPMN_UserManagement.png)
+
+- `Activity Diagram` Scheme
+
+![picture](SDLC/ACT_UserManagement.png)
+
+- `Class Diagram` Scheme
+
+![picture](SDLC/CD_UserManagement.png)
