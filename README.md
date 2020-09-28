@@ -37,8 +37,25 @@
         - `DELETE` : `http://{host}/api/divisions/{id}/`
     
 2. Using Dapper :
+    - User : 
+        - `POST` Users : `http://{host}/api/Users/`
+        ```json
+            {
+                "Password": "{Password}",
+            }
+        ```
+
     - Role : 
-        - `GET` All Role: `http://{host}/api/roles/`
+        - `GET` All Asset Management: `http://{host}/api/users/`
+        - `GET` ID Asset Management: `http://{host}/api/users/{id}/`
+        - `POST` Reset Password : `http://{host}/api/auths/forgot/`
+
+        ```json
+            {
+                "Name": "{Role Name}",
+                "Session": "{Session who did this method }",
+            }
+        ```
     
 
 
@@ -53,15 +70,7 @@
             }
         ```
         
-    - Role : 
-        - `GET` ID : `http://{host}/api/roles/{id}/`
-        - `POST` : `http://{host}/api/roles/`
-            ```json
-                {
-                    "Name": "{Role Name}",
-                    "Session": "{Session who did this method }",
-                }
-            ```
+    - Role :             
         - `PUT` : `http://{host}/api/division/{id}/`
             ```json
                 {
@@ -70,8 +79,6 @@
                 }
             ```
         - `DELETE` : `http://{host}/api/division/{id}/`
-
-
 
 
 ### User Management
@@ -116,7 +123,9 @@
             "zipCode": "{ User Zipcode Address}",
             "Session": "{Session who did this method }",
         }
-    ```    
+    ```
+- `DELETE` : `http://{host}/api/division/{id}/`
+
 - `POST` Forgot Password User Management: `http://{host}/api/auths/forgot`
 ```json
     {

@@ -10,8 +10,9 @@ namespace API.Services
     }
     public class AttrEmail
     {
-        public string mail = "rio.mii.b36@gmail.com";
-        public string pass = "bootcamp36";
+        //public string mail = "rio.mii.b36@gmail.com";
+        //public string pass = "bootcamp36";
+        
     }
 
     public class RandomDigit
@@ -21,5 +22,14 @@ namespace API.Services
         {
             return _random.Next(0, 9999).ToString("D4");
         }
+    }
+
+    public class BaseURL
+    {
+        public string UsrManage = "https://localhost:44349/";
+        public string assetM = "https://localhost:44380/";
+        public string interview = "https://localhost:44303/";
+        public string examOnline = "https://localhost:44332/";
+        public string reimbursParking = "https://localhost:44360/";
     }
 }
