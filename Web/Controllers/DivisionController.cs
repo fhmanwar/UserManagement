@@ -71,7 +71,7 @@ namespace Web.Controllers
             try
             {
                 AuthController controller = new AuthController();
-                var Session = HttpContext.Session.GetString("email");
+                var Session = HttpContext.Session.GetString("id");
                 var json = JsonConvert.SerializeObject(data);
                 var buffer = System.Text.Encoding.UTF8.GetBytes(json);
                 var byteContent = new ByteArrayContent(buffer);
@@ -103,7 +103,7 @@ namespace Web.Controllers
             client.DefaultRequestHeaders.Add("Authorization", HttpContext.Session.GetString("token"));
             var result = client.DeleteAsync("divisions/" + id).Result;
             AuthController controller = new AuthController();
-            controller.SendLogs(HttpContext.Session.GetString("email") + " Delete role", HttpContext.Session.GetString("email"));
+            controller.SendLogs(HttpContext.Session.GetString("id") + " Delete role", HttpContext.Session.GetString("id"));
             return Json(result);
         }
     }

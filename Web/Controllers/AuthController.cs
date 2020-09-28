@@ -5,10 +5,10 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using API.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Web.ViewModels;
 
 namespace Web.Controllers
 {
@@ -16,7 +16,8 @@ namespace Web.Controllers
     {
         readonly HttpClient client = new HttpClient
         {
-            BaseAddress = new Uri("http://winarto-001-site1.dtempurl.com/api/")
+            BaseAddress = new Uri("http://winarto-001-site1.dtempurl.com/api/auths/")
+            //BaseAddress = new Uri("https://localhost:44356/api/auths/")
         };
 
         [Route("login")]
@@ -38,6 +39,22 @@ namespace Web.Controllers
             return Redirect("/login");
         }
 
+        [Route("forgot")]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [Route("reset")]
+        public IActionResult ResetPassword(string token)
+        {
+            if (token != null)
+            {
+                return View();
+            }
+            return Redirect("/");
+        }
+
         [Route("verify")]
         public IActionResult Verify()
         {
@@ -47,9 +64,9 @@ namespace Web.Controllers
         [Route("notfound")]
         public IActionResult Notfound()
         {
-            return View();
+            return View("~/Views/Auth/Notfound.cshtml");
         }
-
+                
         [Route("validate")]
         public IActionResult Validate(UserVM userVM)
         {
@@ -62,12 +79,12 @@ namespace Web.Controllers
                 HttpResponseMessage result = null;
                 if (userVM.VerifyCode != null)
                 { // Verify Code
-                    result = client.PostAsync("auths/code/", byteContent).Result;
+                    result = client.PostAsync("code/", byteContent).Result;
                     SendLogs(userVM.Email + " VerifyCode Successfully", userVM.Email);
                 }
                 else if (userVM.VerifyCode == null)
                 { // Login
-                    result = client.PostAsync("auths/login/", byteContent).Result;
+                    result = client.PostAsync("login/", byteContent).Result;
                 }
 
                 if (result.IsSuccessStatusCode)
@@ -89,10 +106,10 @@ namespace Web.Controllers
                         else if (account.RoleName != null)
                         {
                             HttpContext.Session.SetString("id", account.Id);
-                            //HttpContext.Session.SetString("name", account.Name);
-                            //HttpContext.Session.SetString("email", account.Email);
+                            HttpContext.Session.SetString("name", account.Name);
+                            HttpContext.Session.SetString("email", account.Email);
                             HttpContext.Session.SetString("lvl", account.RoleName);
-                            SendLogs(userVM.Email + " Login", userVM.Email);
+                            SendLogs(userVM.Email + " Login Successfully", userVM.Email);
                             if (account.RoleName == "Admin")
                             {
                                 return Json(new { status = true, msg = "Login Successfully !" });
@@ -107,7 +124,7 @@ namespace Web.Controllers
             }
             else if (userVM.Name != null)
             { // Register
-                var result = client.PostAsync("auths/register/", byteContent).Result;
+                var result = client.PostAsync("register/", byteContent).Result;
                 if (result.IsSuccessStatusCode)
                 {
                     SendLogs(userVM.Email + " Register", userVM.Email);
@@ -118,12 +135,47 @@ namespace Web.Controllers
             return Redirect("/login");
         }
 
-        public IActionResult SendLogs(string response, string msg)
+        [Route("changePass")]
+        public IActionResult ChangePassword(ForgotVM forgotVM)
+        {
+            var json = JsonConvert.SerializeObject(forgotVM);
+            var buffer = System.Text.Encoding.UTF8.GetBytes(json);
+            var byteContent = new ByteArrayContent(buffer);
+            byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+            HttpResponseMessage result = null;
+            if (forgotVM.Token == null)
+            {
+                result = client.PostAsync("forgot/", byteContent).Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    SendLogs(forgotVM.Email + " Forgot Password", forgotVM.Email);
+                    return Json(result);
+                }
+                var getdata = result.Content.ReadAsStringAsync().Result;
+                return Json(new { result, msg = getdata });
+            }
+            else if (forgotVM.Token != null)
+            {
+                result = client.PostAsync("reset?token="+ forgotVM.Token, byteContent).Result;
+                if (result.IsSuccessStatusCode)
+                {
+
+                    SendLogs(HttpContext.Session.GetString("email") + " Forgot Password", HttpContext.Session.GetString("email"));
+                    return Json(result);
+                }
+                var getdata = result.Content.ReadAsStringAsync().Result;
+                return Json(new { result, msg = getdata });
+            }
+            return Redirect("/login");
+        }
+
+        public IActionResult SendLogs(string response, string mail)
         {
             var log = new LogVM
             {
                 Response = response,
-                Email = msg,
+                Email = mail,
             };
             var jsonLog = JsonConvert.SerializeObject(log);
             var bufferLog = System.Text.Encoding.UTF8.GetBytes(jsonLog);
