@@ -21,7 +21,14 @@ namespace Web.Controllers
 
         public IActionResult Index()
         {
-            return View("~/Views/Dashboard/Role.cshtml");
+            if (HttpContext.Session.GetString("lvl") == "Super Admin")
+            {
+                return View("~/Views/Dashboard/Role.cshtml");
+            }
+            else
+            {
+                return Redirect("/profile");
+            }
         }
 
         public IActionResult LoadData()
@@ -115,11 +122,18 @@ namespace Web.Controllers
         readonly HttpClient client = new HttpClient
         {
             BaseAddress = new Uri("http://winarto-001-site1.dtempurl.com/api/")
-            //BaseAddress = new Uri("https://localhost:44356/api/")
         };
+
         public IActionResult Index()
         {
-            return View("~/Views/Dashboard/Account.cshtml");
+            if (HttpContext.Session.GetString("lvl") == "Super Admin")
+            {
+                return View("~/Views/Dashboard/Account.cshtml");
+            }
+            else
+            {
+                return Redirect("/profile");
+            }
         }
         public IActionResult LoadData()
         {
