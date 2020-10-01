@@ -19,7 +19,26 @@ namespace API.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("API.Models.Division", b =>
+            modelBuilder.Entity("API.Models.Absent", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTimeOffset>("InsDate");
+
+                    b.Property<DateTimeOffset>("UpdDate");
+
+                    b.Property<string>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("TB_M_Absent");
+                });
+
+            modelBuilder.Entity("API.Models.Department", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
@@ -36,7 +55,7 @@ namespace API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TB_M_Division");
+                    b.ToTable("TB_M_Department");
                 });
 
             modelBuilder.Entity("API.Models.Employee", b =>
@@ -53,13 +72,15 @@ namespace API.Migrations
 
                     b.Property<DateTimeOffset>("DeleteDate");
 
-                    b.Property<string>("DivisionId");
+                    b.Property<string>("DepartmentId");
 
                     b.Property<string>("NIK");
 
                     b.Property<string>("Name");
 
                     b.Property<string>("Phone");
+
+                    b.Property<string>("ProfileImage");
 
                     b.Property<string>("Province");
 
@@ -75,7 +96,7 @@ namespace API.Migrations
 
                     b.HasKey("UserId");
 
-                    b.HasIndex("DivisionId");
+                    b.HasIndex("DepartmentId");
 
                     b.ToTable("TB_M_Employee");
                 });
@@ -152,11 +173,18 @@ namespace API.Migrations
                     b.ToTable("TB_M_UserRole");
                 });
 
+            modelBuilder.Entity("API.Models.Absent", b =>
+                {
+                    b.HasOne("API.Models.Employee", "Employee")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+                });
+
             modelBuilder.Entity("API.Models.Employee", b =>
                 {
-                    b.HasOne("API.Models.Division", "Division")
+                    b.HasOne("API.Models.Department", "Department")
                         .WithMany()
-                        .HasForeignKey("DivisionId");
+                        .HasForeignKey("DepartmentId");
 
                     b.HasOne("API.Models.User", "User")
                         .WithOne("Employee")

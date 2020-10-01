@@ -9,9 +9,14 @@ namespace API.ViewModels
     {
     }
 
-    public class PieChartVM
+    public class PieChartUserRoleVM
     {
-        public string Title { get; set; }
+        public string RoleName { get; set; }
+        public int Total { get; set; }
+    }
+    public class PieChartUserDivVM
+    {
+        public string DepartmentName { get; set; }
         public int Total { get; set; }
     }
     public class BarChartVM
@@ -24,11 +29,4 @@ namespace API.ViewModels
         public double star5 { get; set; }
     }
 
-    public class TopTrainingVM
-    {
-        public string Title { get; set; }
-        public string Trainer { get; set; }
-        public string TypeTraining { get; set; }
-        public double Rate { get; set; }
-    }
 }

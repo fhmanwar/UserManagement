@@ -17,7 +17,6 @@ namespace Web.Controllers
         readonly HttpClient client = new HttpClient
         {
             BaseAddress = new Uri("http://winarto-001-site1.dtempurl.com/api/auths/")
-            //BaseAddress = new Uri("https://localhost:44356/api/auths/")
         };
 
         [Route("login")]
@@ -105,12 +104,24 @@ namespace Web.Controllers
                         }
                         else if (account.RoleName != null)
                         {
+                            JsonResult obj = (JsonResult)GetById(account.Id);
+                            var objSer = JsonConvert.SerializeObject(obj.Value);
+                            var getUserData = JsonConvert.DeserializeObject<GetUserVM>(objSer);
+                            if (getUserData.ProfileImages != null)
+                            {
+                                HttpContext.Session.SetString("img", getUserData.ProfileImages);
+                            }
+                            //else
+                            //{
+                            //    HttpContext.Session.SetString("img", "/images/default.png");
+                            //}
+
                             HttpContext.Session.SetString("id", account.Id);
                             HttpContext.Session.SetString("name", account.Name);
                             HttpContext.Session.SetString("email", account.Email);
                             HttpContext.Session.SetString("lvl", account.RoleName);
                             SendLogs(userVM.Email + " Login Successfully", userVM.Email);
-                            if (account.RoleName == "Admin")
+                            if (account.RoleName == "Super Admin")
                             {
                                 return Json(new { status = true, msg = "Login Successfully !" });
                             }
@@ -168,6 +179,32 @@ namespace Web.Controllers
                 return Json(new { result, msg = getdata });
             }
             return Redirect("/login");
+        }
+
+
+        readonly HttpClient Userclient = new HttpClient
+        {
+            BaseAddress = new Uri("http://winarto-001-site1.dtempurl.com/api/")
+        };
+
+        public IActionResult GetById(string Id)
+        {
+            GetUserVM data = null;
+            Userclient.DefaultRequestHeaders.Add("Authorization", HttpContext.Session.GetString("token"));
+            var resTask = Userclient.GetAsync("users/" + Id);
+            resTask.Wait();
+
+            var result = resTask.Result;
+            if (result.IsSuccessStatusCode)
+            {
+                var json = JsonConvert.DeserializeObject(result.Content.ReadAsStringAsync().Result).ToString();
+                data = JsonConvert.DeserializeObject<GetUserVM>(json);
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Server Error.");
+            }
+            return Json(data);
         }
 
         public IActionResult SendLogs(string response, string mail)

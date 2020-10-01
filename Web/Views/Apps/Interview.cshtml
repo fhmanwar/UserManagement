@@ -1,0 +1,56 @@
+﻿
+@{
+    ViewData["Title"] = "Interview & Placement";
+    Layout = "~/Views/Layout/_Layout.cshtml";
+}
+
+<div class="page-inner">
+    <div class="page-header">
+        <h4 class="page-title">@ViewData["Title"]</h4>
+        <ul class="breadcrumbs">
+            <li class="nav-home"><a href="/"><i class="flaticon-home"></i></a></li>
+            <li class="separator"><i class="flaticon-right-arrow"></i></li>
+            <li class="nav-item"><a href="#">Apps</a></li>
+            <li class="separator"><i class="flaticon-right-arrow"></i></li>
+            <li class="nav-item"><a href="#">@ViewData["Title"]</a></li>
+        </ul>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex flex-row align-content-between justify-content-between">
+                        <h4 class="card-title">Add Roles</h4>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="interview" class="display table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Role</th>
+                                    <th>NIK</th>
+                                    <th>Site</th>
+                                    <th>Phone</th>
+                                    <th>Address</th>
+                                </tr>
+                            </thead>
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+
+
+@section Script{
+    <script src="~/js/script/AppsScript.js"></script>
+}
+

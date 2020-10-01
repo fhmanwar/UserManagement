@@ -1,0 +1,191 @@
+﻿
+@{
+    ViewData["Title"] = "User";
+    Layout = "~/Views/Layout/_Layout.cshtml";
+}
+
+
+<div class="page-inner">
+    <div class="page-header">
+        <h4 class="page-title">User Management</h4>
+        <ul class="breadcrumbs">
+            <li class="nav-home"><a href="/"><i class="flaticon-home"></i></a></li>
+            <li class="separator"><i class="flaticon-right-arrow"></i></li>
+            <li class="nav-item"><a href="#">@ViewData["Title"]</a></li>
+        </ul>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex flex-row align-content-between justify-content-between">
+                        <h4 class="card-title">Add Users</h4>
+                        <div data-toggle="modal" data-target="#myModal" onclick="ClearScreen();">
+                            <button class="btn btn-secondary btn-border btn-round" data-toggle="tooltip" data-placement="top" title="" data-original-title="Add">
+                                <i class="fa fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Modal -->
+                    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header no-bd">
+                                    <h5 class="modal-title"><span class="fw-mediumbold">Form Data</span></h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form>
+                                        <div class="row">
+                                            <input type="text" id="Id" name="Id" class="form-control" hidden>
+                                            <div class="col-md-6">
+                                                <div class="form-group form-group-default">
+                                                    <label>NIK</label>
+                                                    <input type="text" id="NIK" class="form-control" placeholder="Fill NIK">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group form-group-default">
+                                                    <label>Email</label>
+                                                    <input type="text" id="Email" class="form-control" placeholder="Fill Email">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-8">
+                                                <div class="form-group form-group-default">
+                                                    <label>Name</label>
+                                                    <input type="text" id="Name" class="form-control" placeholder="Fill Name">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group form-group-default">
+                                                    <label>Department</label>
+                                                    <select class="form-control" id="DeptOption" name="DeptOption"></select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group form-group-default">
+                                                    <label>Site</label>
+                                                    <input type="text" id="Site" class="form-control" placeholder="Fill Site">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group form-group-default">
+                                                    <label>Phone</label>
+                                                    <input type="text" id="Phone" class="form-control" placeholder="Fill Phone">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <div class="form-group form-group-default">
+                                                    <label>Role</label>
+                                                    <select class="form-control" id="RoleOption" name="RoleOption"></select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group form-group-default">
+                                                    <label>Password</label>
+                                                    <input type="password" id="Pass" class="form-control" placeholder="Fill Password">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group form-group-default">
+                                                    <label>Confirm Password</label>
+                                                    <input type="password" id="confirmPass" class="form-control" placeholder="Fill Confirm Password">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group form-group-default">
+                                                    <label>Province</label>
+                                                    <select class="form-control" id="Province" name="Province"></select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group form-group-default">
+                                                    <label>City</label>
+                                                    <select class="form-control" id="City" name="City"></select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <div class="form-group form-group-default">
+                                                    <label>District</label>
+                                                    <select class="form-control" id="District" name="District"></select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <div class="form-group form-group-default">
+                                                    <label>Urban</label>
+                                                    <select class="form-control" id="Urban" name="Urban"></select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group form-group-default">
+                                                    <label>Zipcode</label>
+                                                    <input type="text" id="Zipcode" class="form-control" placeholder="Zip Code">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="form-group form-group-default">
+                                                    <label>Address</label>
+                                                    <textarea class="form-control" id="Address" rows="3" placeholder="Fill Location"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer no-bd">
+                                    <button type="button" id="add" class="btn btn-success btn-border btn-round" data-dismiss="modal" onclick="Save();">Insert</button>
+                                    <button type="button" id="update" class="btn btn-warning btn-border btn-round" data-dismiss="modal" onclick="Update();">Update</button>
+                                    <button type="button" class="btn btn-danger btn-border btn-round" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table id="account" class="display table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Role</th>
+                                    <th>NIK</th>
+                                    <th>Site</th>
+                                    <th>Phone</th>
+                                    <th>Department</th>
+                                    <th>Address</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@section Script{
+    <script src="~/js/script/UserScript.js"></script>
+}
+

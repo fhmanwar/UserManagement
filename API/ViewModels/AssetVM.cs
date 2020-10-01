@@ -21,8 +21,8 @@ namespace API.ViewModels
         public string ZipCode { get; set; }
         public string RoleID { get; set; }
         public string RoleName { get; set; }
-        public string DivisionID { get; set; }
-        public string DivisionName { get; set; }
+        public string DepartmentID { get; set; }
+        public string DepartmentName { get; set; }
     }
 
     public class AssetForgotVM

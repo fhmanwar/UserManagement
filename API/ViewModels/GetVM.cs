@@ -22,6 +22,7 @@ namespace API.ViewModels
         public string Name { get; set; }
         public string NIK { get; set; }
         public string Site { get; set; }
+        public string ProfileImages { get; set; }
         public string Phone { get; set; }
         public string Address { get; set; }
         public string Province { get; set; }
@@ -31,8 +32,17 @@ namespace API.ViewModels
         public string ZipCode { get; set; }
         public string RoleID { get; set; }
         public string RoleName { get; set; }
-        public string DivisionID { get; set; }
-        public string DivisionName { get; set; }
+        public string DepartmentID { get; set; }
+        public string DepartmentName { get; set; }
         public string Session { get; set; }
+    }
+
+    public class GetAbsentVM
+    {
+        public int Id { get; set; }
+        public string UserId { get; set; }
+        public string Name { get; set; }
+        public DateTimeOffset InsAt { get; set; }
+        public DateTimeOffset UpdAt { get; set; }
     }
 }

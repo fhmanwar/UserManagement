@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Web.ViewModels;
@@ -18,7 +19,14 @@ namespace Web.Controllers
 
         public IActionResult Index()
         {
-            return View("~/Views/Dashboard/Address.cshtml");
+            if (HttpContext.Session.GetString("lvl") == "Super Admin")
+            {
+                return View("~/Views/Dashboard/Address.cshtml");
+            }
+            else
+            {
+                return Redirect("/profile");
+            }
         }
 
         public IActionResult LoadProvince()

@@ -20,9 +20,10 @@ namespace API.Models
         public string SubDistrict { get; set; }
         public string Village { get; set; }
         public string ZipCode { get; set; }
+        public string ProfileImage { get; set; }
 
-        [ForeignKey("Division")]
-        public string DivisionId { get; set; }
+        [ForeignKey("Department")]
+        public string DepartmentId { get; set; }
 
         public DateTimeOffset CreateDate { get; set; }
         public DateTimeOffset UpdateDate { get; set; }
@@ -30,6 +31,6 @@ namespace API.Models
         public bool isDelete { get; set; }
         
         public User User { get; set; }
-        public Division Division { get; set; }
+        public Department Department { get; set; }
     }
 }
