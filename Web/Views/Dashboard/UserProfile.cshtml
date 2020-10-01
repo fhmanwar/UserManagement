@@ -1,0 +1,262 @@
+﻿@using Microsoft.AspNetCore.Http
+@{
+    Layout = "";
+    var userId = Context.Session.GetString("id");
+    var name = Context.Session.GetString("name");
+    var img = Context.Session.GetString("img");
+    var email = Context.Session.GetString("email");
+    var level = Context.Session.GetString("lvl");
+    if (level == null && userId == null)
+    {
+        Context.Response.Redirect("/login");
+    }
+}
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <title>Profile - User Management</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+
+    <!-- Font -->
+    <link href="https://fonts.googleapis.com/css?family=Poppins:400,500,600,700%7CAllura" rel="stylesheet">
+
+    <!-- Stylesheets -->
+    <link href="~/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/css/ionicons.css" rel="stylesheet" />
+    <link href="~/css/UserProfile.css" rel="stylesheet" />
+
+</head>
+<body>
+    <div class="wrapper">
+
+        <header> </header>
+
+        <div class="intro-section">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-1 col-lg-2"></div>
+                    <div class="col-md-10 col-lg-8">
+                        <div class="intro">
+                            <div class="profile-img">
+                                @if (img != null)
+                                {
+                                    <img src="~/upload/profiles/@img" alt="">
+                                }
+                                else
+                                {
+                                    <img src="~/images/default.png" alt="">
+                                }
+                            </div>
+                            <h2 id="tag-name"><b>Michel SMith</b></h2>
+                            <h4 class="font-yellow" id="tag-department">Key Account Manager</h4>
+                            <ul class="information margin-tb-30">
+                                <li>
+                                    <b>Assignment Site : </b><div id="tag-site"></div>
+                                </li>
+                                <li>
+                                    <tr>
+                                        <th><b>EMAIL : </b></th>
+                                        <td>@email</td>
+                                    </tr>
+                                </li>
+                            </ul>
+                            @*<ul class="social-icons">
+                                <li><a href="#"><i class="ion-social-pinterest"></i></a></li>
+                                <li><a href="#"><i class="ion-social-linkedin"></i></a></li>
+                                <li><a href="#"><i class="ion-social-instagram"></i></a></li>
+                                <li><a href="#"><i class="ion-social-facebook"></i></a></li>
+                                <li><a href="#"><i class="ion-social-twitter"></i></a></li>
+                            </ul>*@
+
+                            <a class="btn btn-border-purple" href="#" onclick="GetProfile();" id="edit" data-toggle="tooltip" data-placement="top" title="Edit Profile"><i class="ion-edit h5"></i></a>
+                            <a class="btn btn-border-purple" href="/logout" id="logout" data-toggle="tooltip" data-placement="top" title="Log-Out"><i class="ion-log-out h5"></i></a>
+
+
+                        </div><!-- intro -->
+                    </div><!-- col-sm-8 -->
+                </div><!-- row -->
+            </div><!-- container -->
+        </div><!-- intro-section -->
+        
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header no-bd">
+                        <h5 class="modal-title"><span class="fw-mediumbold">Form Data</span></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="row">
+                                <input type="text" id="Id" name="Id" class="form-control" hidden>
+                                <input type="text" id="ImageName" class="form-control" hidden>
+                                <input type="text" id="RoleName" class="form-control" hidden>
+                                <input type="text" id="DeptId" class="form-control" hidden>
+                                <div class="col-md-4">
+                                    <div class="form-group form-group-default">
+                                        <label>NIK</label>
+                                        <input type="text" id="NIK" class="form-control" placeholder="Fill NIK" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group form-group-default">
+                                        <label>Email</label>
+                                        <input type="text" id="Email" class="form-control" placeholder="Fill Email" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group form-group-default">
+                                        <label>Site</label>
+                                        <input type="text" id="Site" class="form-control" placeholder="Fill Site" readonly>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group form-group-default">
+                                        <label>Name</label>
+                                        <input type="text" id="Name" class="form-control" placeholder="Fill Name">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group form-group-default">
+                                        <label>Phone</label>
+                                        <input type="text" id="Phone" class="form-control" placeholder="Fill Phone">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group form-group-default">
+                                        <label>Image</label>
+                                        <input type="file" id="Image" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group form-group-default">
+                                        <label>Password</label>
+                                        <input type="password" id="Pass" class="form-control" placeholder="Fill Password">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group form-group-default">
+                                        <label>Confirm Password</label>
+                                        <input type="password" id="confirmPass" class="form-control" placeholder="Fill Confirm Password">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group form-group-default">
+                                        <label>Province</label>
+                                        <select class="form-control" id="Province" name="Province"></select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group form-group-default">
+                                        <label>City</label>
+                                        <select class="form-control" id="City" name="City"></select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group form-group-default">
+                                        <label>District</label>
+                                        <select class="form-control" id="District" name="District"></select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group form-group-default">
+                                        <label>Urban</label>
+                                        <select class="form-control" id="Urban" name="Urban"></select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group form-group-default">
+                                        <label>Zipcode</label>
+                                        <input type="text" id="Zipcode" class="form-control" placeholder="Zip Code">
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group form-group-default">
+                                        <label>Address</label>
+                                        <textarea class="form-control" id="Address" rows="3" placeholder="Fill Location"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer no-bd">
+                        <button type="button" id="update" class="btn btn-warning btn-border btn-round" data-dismiss="modal" onclick="Update();">Update</button>
+                        <button type="button" class="btn btn-danger btn-border btn-round" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Modal -->
+
+        <div>
+            <div class="row flex-row justify-content-center">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header bg-white">
+                            <div class="d-flex flex-row align-content-between justify-content-between">
+                                <h4 class="card-title">Qr Code for Presence</h4>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div id="generateQrCode"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="container-fluid">
+                <div class="copyright">
+                    &copy; 2020, made with <i class="ion-heart" aria-hidden="true"></i> by iBoy
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- SCIPTS -->
+    <script src="~/js/plugin/jquery.3.2.1.min.js"></script>
+    <script src="~/js/Plugin/popper.min.js"></script>
+    <script src="~/js/plugin/bootstrap.min.js"></script>
+
+    <script src="~/js/Plugin/jquery-ui.min.js"></script>
+    <script src="~/js/Plugin/jquery.ui.touch-punch.min.js"></script>
+    <script src="~/js/Plugin/jquery.scrollbar.min.js"></script>
+    <script src="~/js/Plugin/bootstrap-notify.min.js"></script>
+    <script src="~/js/plugin/bootstrap-toggle.min.js"></script>
+
+    <script src="~/js/qrCode/jquery.qrcode.min.js"></script>
+    <script src="~/js/script/UserProfileScript.js"></script>
+
+    <script>
+        $(function () {
+            $('#logout').tooltip();
+            $('#edit').tooltip();
+
+            if (performance.navigation.type === 2) {
+                location.reload(true);
+            }
+        })
+    </script>
+
+</body>
+</html>

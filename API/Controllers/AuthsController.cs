@@ -48,7 +48,7 @@ namespace API.Controllers
         {
             if (ModelState.IsValid)
             {
-                var getData = _context.UserRole.Include("Role").Include("User").Include(x => x.User.Employee).SingleOrDefault(x => x.User.Email == userVM.Email);
+                var getData = _context.UserRole.Include("Role").Include("User").Include(x => x.User.Employee).Include(x => x.User.Employee.Department).SingleOrDefault(x => x.User.Email == userVM.Email);
                 if (getData == null)
                 {
                     return NotFound("Email Not Found");
@@ -71,46 +71,13 @@ namespace API.Controllers
                             Name = getData.User.Employee.Name,
                             Email = getData.User.Email,
                             RoleName = getData.Role.Name,
+                            DepartmentName = getData.User.Employee.Department.Name,
                             VerifyCode = getData.User.VerifyCode,
                         };
                         Sendlog(userVM.Email + " Login Successfully", userVM.Email);
                         return Ok(GetJWT(user));
                     }
                     return BadRequest("Invalid credentials");
-                }
-            }
-            return BadRequest("Data Not Valid");
-        }
-
-        [HttpPost]
-        [Route("code")]
-        public IActionResult VerifyCode(UserVM userVM)
-        {
-            if (ModelState.IsValid)
-            {
-                var getData = _context.UserRole.Include("Role").Include("User").Include(x => x.User.Employee).SingleOrDefault(x => x.User.Email == userVM.Email);
-                if (getData == null)
-                {
-                    return NotFound();
-                }
-                else if (userVM.VerifyCode != getData.User.VerifyCode)
-                {
-                    return BadRequest("Your Code is Wrong");
-                }
-                else
-                {
-                    getData.User.VerifyCode = null;
-                    _context.SaveChanges();
-                    var user = new UserVM()
-                    {
-                        Id = getData.User.Id,
-                        Name = getData.User.Employee.Name,
-                        Email = getData.User.Email,
-                        RoleName = getData.Role.Name,
-                        VerifyCode = getData.User.VerifyCode,
-                    };
-                    Sendlog(userVM.Email + " Verify Code Successfully", userVM.Email);
-                    return StatusCode(200, GetJWT(user));
                 }
             }
             return BadRequest("Data Not Valid");
@@ -247,6 +214,7 @@ namespace API.Controllers
                             new Claim("Name", dataVM.Name),
                             new Claim("Email", dataVM.Email),
                             new Claim("RoleName", dataVM.RoleName),
+                            new Claim("DepartmentName", dataVM.DepartmentName),
                             new Claim("VerifyCode", dataVM.VerifyCode == null ? "" : dataVM.VerifyCode),
                         };
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
@@ -272,6 +240,40 @@ namespace API.Controllers
             return logsController.Create(log);
         }
 
+
+        [HttpPost]
+        [Route("code")]
+        public IActionResult VerifyCode(UserVM userVM)
+        {
+            if (ModelState.IsValid)
+            {
+                var getData = _context.UserRole.Include("Role").Include("User").Include(x => x.User.Employee).SingleOrDefault(x => x.User.Email == userVM.Email);
+                if (getData == null)
+                {
+                    return NotFound();
+                }
+                else if (userVM.VerifyCode != getData.User.VerifyCode)
+                {
+                    return BadRequest("Your Code is Wrong");
+                }
+                else
+                {
+                    getData.User.VerifyCode = null;
+                    _context.SaveChanges();
+                    var user = new UserVM()
+                    {
+                        Id = getData.User.Id,
+                        Name = getData.User.Employee.Name,
+                        Email = getData.User.Email,
+                        RoleName = getData.Role.Name,
+                        VerifyCode = getData.User.VerifyCode,
+                    };
+                    Sendlog(userVM.Email + " Verify Code Successfully", userVM.Email);
+                    return StatusCode(200, GetJWT(user));
+                }
+            }
+            return BadRequest("Data Not Valid");
+        }
 
         //[HttpPost]
         //[Route("myAksesIboyRegister")]
