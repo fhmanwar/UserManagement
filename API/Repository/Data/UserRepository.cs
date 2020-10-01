@@ -149,5 +149,59 @@ namespace API.Repository.Data
 
     }
 
-    
+    public class AbsentRepository
+    {
+        IConfiguration _configuration;
+        DynamicParameters parameters = new DynamicParameters();
+        public AbsentRepository(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
+        public async Task<IEnumerable<GetAbsentVM>> getAll()
+        {
+            using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("myConnection")))
+            {
+                var procName = "SP_GetAll_Absent";
+                var getAll = await connection.QueryAsync<GetAbsentVM>(procName, commandType: CommandType.StoredProcedure);
+                return getAll;
+            }
+        }
+
+        public GetAbsentVM getID(int id)
+        {
+            using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("myConnection")))
+            {
+                var procName = "SP_GetID_Absent";
+                parameters.Add("id", id);
+                var getId = connection.Query<GetAbsentVM>(procName, parameters, commandType: CommandType.StoredProcedure).SingleOrDefault();
+                return getId;
+            }
+        }
+
+        public int Create(AbsentVM dataVM)
+        {
+            using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("myConnection")))
+            {
+                var procName = "SP_Create_Absent";
+                parameters.Add("userId", dataVM.UserId);
+                parameters.Add("insDate", dataVM.InsDate);
+                var insert = connection.Execute(procName, parameters, commandType: CommandType.StoredProcedure);
+                return insert;
+            }
+        }
+
+        public int Update(AbsentVM dataVM, int id)
+        {
+            using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("myConnection")))
+            {
+                var procName = "SP_Update_Absent";
+                parameters.Add("id", id);
+                parameters.Add("updDate", dataVM.UpdDate);
+                var Edit = connection.Execute(procName, parameters, commandType: CommandType.StoredProcedure);
+                return Edit;
+            }
+        }
+
+    }
 }

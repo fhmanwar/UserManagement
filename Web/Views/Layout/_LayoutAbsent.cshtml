@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - User Management</title>
+
+    <script src="~/js/Plugin/webfont.min.js"></script>
+    <script>
+        WebFont.load({
+            google: { "families": ["Lato:300,400,700,900"] },
+            custom: { "families": ["Flaticon", "Font Awesome 5 Solid", "Font Awesome 5 Regular", "Font Awesome 5 Brands", "simple-line-icons"], urls: ['/css/fonts.min.css'] },
+            active: function () {
+                sessionStorage.fonts = true;
+            }
+        });
+    </script>
+    <link rel="stylesheet" href="~/css/bootstrap.min.css">
+    <link href="~/css/Style.css" rel="stylesheet" />
+</head>
+<body>
+    <main role="main">
+        <div class="container">
+            <div class="absent text-center">
+                <h1>@ViewData["Title"]</h1>
+            </div>
+        </div>
+        <!-- /container -->
+    </main>
+
+    <div class="container">
+        @RenderBody()
+        <hr />
+    </div>
+
+
+    <footer class="container" style="margin-top:30px;">
+        <div class="row flex-row justify-content-center">
+            <p>Copyright &copy; 2020 by User Management</p>
+        </div>
+    </footer>
+
+    <script src="~/js/Plugin/jquery.3.2.1.min.js"></script>
+    <script src="~/js/Plugin/popper.min.js"></script>
+    <script src="~/js/Plugin/bootstrap.min.js"></script>
+    <script src="~/js/Plugin/datatables.min.js"></script>
+    <script src="~/js/plugin/moment.min.js"></script>
+    <script src="~/js/plugin/sweetalert2@9.js"></script>
+
+    <!-- Plugin qrCode -->
+    <script src="~/js/qrCode/qrcodelib.js"></script>
+    <script src="~/js/qrCode/webcodecamjquery.js"></script>
+
+    @RenderSection("Script", required: false)
+</body>
+</html>

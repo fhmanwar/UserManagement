@@ -23,6 +23,7 @@ namespace Web.ViewModels
         public string NIK { get; set; }
         public string Site { get; set; }
         public string Phone { get; set; }
+        public string ProfileImages { get; set; }
         public string Address { get; set; }
         public string Province { get; set; }
         public string City { get; set; }
@@ -31,9 +32,18 @@ namespace Web.ViewModels
         public string ZipCode { get; set; }
         public string RoleID { get; set; }
         public string RoleName { get; set; }
-        public string DivisionID { get; set; }
-        public string DivisionName { get; set; }
+        public string DepartmentID { get; set; }
+        public string DepartmentName { get; set; }
         public string Session { get; set; }
+    }
+
+    public class GetAbsentVM
+    {
+        public int Id { get; set; }
+        public string UserId { get; set; }
+        public string Name { get; set; }
+        public DateTime InsAt { get; set; }
+        public DateTime UpdAt { get; set; }
     }
 
     public class UserVM
@@ -56,13 +66,14 @@ namespace Web.ViewModels
         public string Phone { get; set; }
         public string Address { get; set; }
         public string RoleName { get; set; }
-        public string DivisionName { get; set; }
+        public string DepartmentName { get; set; }
     }
 
     public class LogVM
     {
         public string Response { get; set; }
         public string Email { get; set; }
+        public string CreateDate { get; set; }
     }
 
     public class ForgotVM
@@ -83,6 +94,11 @@ namespace Web.ViewModels
         public string UrbanId { get; set; }
         public string Urban { get; set; }
         public string ZipCode { get; set; }
+    }
+
+    public class UploadImgVM
+    {
+        public string ImageName { get; set; }
     }
 
 }

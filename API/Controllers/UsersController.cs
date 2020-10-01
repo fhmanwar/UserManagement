@@ -183,13 +183,14 @@ namespace API.Controllers
                                 NIK = getUserVM.NIK,
                                 AssignmentSite = getUserVM.Site,
                                 Phone = getUserVM.Phone,
+                                ProfileImage = getUserVM.ProfileImages,
                                 Address = getUserVM.Address,
                                 Province = getUserVM.Province,
                                 City = getUserVM.City,
                                 SubDistrict = getUserVM.SubDistrict,
                                 Village = getUserVM.Village,
                                 ZipCode = getUserVM.ZipCode,
-                                DivisionId = getUserVM.DivisionID,
+                                DepartmentId = getUserVM.DepartmentID,
                                 CreateDate = DateTimeOffset.Now,
                                 isDelete = false
                             };
@@ -226,13 +227,14 @@ namespace API.Controllers
                     getData.User.Employee.NIK = dataVM.NIK;
                     getData.User.Employee.AssignmentSite = dataVM.Site;
                     getData.User.Employee.Phone = dataVM.Phone;
+                    getData.User.Employee.ProfileImage = dataVM.ProfileImages;
                     getData.User.Employee.Address = dataVM.Address;
                     getData.User.Employee.Province = dataVM.Province;
                     getData.User.Employee.City = dataVM.City;
                     getData.User.Employee.SubDistrict = dataVM.SubDistrict;
                     getData.User.Employee.Village = dataVM.Village;
                     getData.User.Employee.ZipCode = dataVM.ZipCode;
-                    getData.User.Employee.DivisionId = dataVM.DivisionID;
+                    getData.User.Employee.DepartmentId = dataVM.DepartmentID;
                     getData.User.Email = dataVM.Email;
                     if (dataVM.Password != null)
                     {
@@ -292,6 +294,67 @@ namespace API.Controllers
 
     }
 
+
+    [Route("api/[controller]")]
+    [ApiController]
+    public class AbsentsController : ControllerBase
+    {
+        AbsentRepository _repo;
+        public AbsentsController(AbsentRepository repo)
+        {
+            _repo = repo;
+        }
+
+        [HttpGet]
+        public async Task<IEnumerable<GetAbsentVM>> GetAll() => await _repo.getAll();
+
+        [HttpGet("{id}")]
+        public GetAbsentVM GetID(int id) => _repo.getID(id);
+
+        [HttpPost]
+        public IActionResult Create(GetAbsentVM dataVM)
+        {
+            if (ModelState.IsValid)
+            {
+                var data = new AbsentVM
+                {
+                    UserId = dataVM.UserId,
+                    InsDate = dataVM.InsAt
+                };
+                var create = _repo.Create(data);
+                if (create > 0)
+                {
+                    return Ok("Successfully Created");
+                }
+                return BadRequest("Not Successfully");
+
+            }
+            return BadRequest("Not Successfully");
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult Update(int id, GetAbsentVM dataVM)
+        {
+            if (ModelState.IsValid)
+            {
+                var data = new AbsentVM
+                {
+                    UpdDate = dataVM.UpdAt
+                };
+                var update = _repo.Update(data, id);
+                if (update > 0)
+                {
+                    return Ok("Successfully Created");
+                }
+                return BadRequest("Not Successfully");
+            }
+            return BadRequest("Not Successfully");
+        }
+
+    }
+
+
+
     [Route("api/[controller]")]
     [ApiController]
     public class LogsController : ControllerBase
@@ -315,6 +378,7 @@ namespace API.Controllers
                                     uRole => uRole.User.Email,
                                     (log, uRole) => new { Employees = uRole, LogActivities = log })
                                 .Where(x => x.LogActivities.Email == x.Employees.User.Email)
+                                .OrderByDescending(x => x.LogActivities.Id)
                                 .ToListAsync();
             if (getData.Count == 0)
             {

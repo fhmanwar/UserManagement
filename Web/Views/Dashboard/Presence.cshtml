@@ -1,0 +1,92 @@
+﻿
+@{
+    ViewData["Title"] = "Presence";
+    Layout = "~/Views/Layout/_Layout.cshtml";
+}
+
+<div class="page-inner">
+    <div class="page-header">
+        <h4 class="page-title">User Management</h4>
+        <ul class="breadcrumbs">
+            <li class="nav-home"><a href="/"><i class="flaticon-home"></i></a></li>
+            <li class="separator"><i class="flaticon-right-arrow"></i></li>
+            <li class="nav-item"><a href="#">@ViewData["Title"]</a></li>
+        </ul>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex flex-row align-content-between justify-content-between">
+                        <h4 class="card-title">Add Roles</h4>
+                        <div data-toggle="modal" data-target="#roleModal" onclick="ClearScreen();">
+                            <button class="btn btn-secondary btn-border btn-round" data-toggle="tooltip" data-placement="top" title="" data-original-title="Add">
+                                <i class="fa fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Modal -->
+                    <div class="modal fade" id="roleModal" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header no-bd">
+                                    <h5 class="modal-title"><span class="fw-mediumbold">Form Data</span></h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form>
+                                        <div class="row">
+                                            <input type="text" id="IdRole" class="form-control" hidden>
+                                            <div class="align-content-center col-md-8">
+                                                <div class="form-group form-group-default">
+                                                    <label>Role</label>
+                                                    <input type="text" id="Role" class="form-control" placeholder="Fill Role">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer no-bd">
+                                    <button type="button" id="addRole" class="btn btn-success btn-border btn-round" data-dismiss="modal" onclick="SaveRole();">Insert</button>
+                                    <button type="button" id="updRole" class="btn btn-warning btn-border btn-round" data-dismiss="modal" onclick="UpdRole();">Update</button>
+                                    <button type="button" class="btn btn-danger btn-border btn-round" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table id="Presence" class="display table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Employee ID</th>
+                                    <th>Name</th>
+                                    <th>Check In</th>
+                                    <th>Check Out</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+
+
+@section Script{
+    <script src="~/js/script/PresenceScript.js"></script>
+}
+
+

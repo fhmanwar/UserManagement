@@ -1,0 +1,46 @@
+﻿
+@{
+    ViewData["Title"] = "Presence";
+    Layout = "~/Views/Layout/_LayoutAbsent.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                @*<div id="scanBarcode"></div>*@
+                @*<video autoplay="true" id="scanBarcode">
+                        Browsermu tidak mendukung bro, upgrade donk!
+                    </video>*@
+                <canvas id="scanCode"></canvas>
+                <hr>
+                <ul></ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="Presence" class="display table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Employee ID</th>
+                                <th>Name</th>
+                                <th>Check In</th>
+                                <th>Check Out</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Script {
+    <script src="~/js/script/AbsentScript.js"></script>
+}

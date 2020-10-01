@@ -25,6 +25,7 @@ namespace API.ViewModels
         public string VerifyCode { get; set; }
         public string Token { get; set; }
         public string RoleName { get; set; }
+        public string DepartmentName { get; set; }
     }
 
     public class EmployeeVM
@@ -34,6 +35,7 @@ namespace API.ViewModels
         public string NIK { get; set; }
         public string Site { get; set; }
         public string Phone { get; set; }
+        public string ProfileImages { get; set; }
         public string Address { get; set; }
         public string Province { get; set; }
         public string City { get; set; }
@@ -41,8 +43,8 @@ namespace API.ViewModels
         public string Village { get; set; }
         public string ZipCode { get; set; }
         public string RoleName { get; set; }
-        public string DivisionID { get; set; }
-        public string DivisionName { get; set; }
+        public string DepartmentID { get; set; }
+        public string DepartmentName { get; set; }
     }
 
     public class ForgotVM
@@ -55,5 +57,13 @@ namespace API.ViewModels
     {
         public string Response { get; set; }
         public string Email { get; set; }
+    }
+
+    public class AbsentVM
+    {
+        public int Id { get; set; }
+        public string UserId { get; set; }
+        public DateTimeOffset InsDate { get; set; }
+        public DateTimeOffset UpdDate { get; set; }
     }
 }
