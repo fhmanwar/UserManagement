@@ -76,6 +76,10 @@ function Login() {
                         '<a href="{3}" target="{4}" data-notify="url"></a>' +
                         '</div>'
                 });
+                setCookie("log1", "", 0);
+                setCookie("log2", "", 0);
+                setCookie("log3", "", 0);
+                localStorage.setTimeLog = '';
                 window.setTimeout(function () {
                     location.reload();
                     window.location.href = "/";
@@ -142,16 +146,53 @@ function Login() {
                 //time = 120;
                 //showTimer();
                 //timer = setInterval(showTimer, 1000);
+
                 var minute = 3 * 60;
                 time = minute;
                 showTimer();
                 timer = setInterval(showTimer, 1000);
+
+                $.notify({
+                    // options
+                    icon: 'flaticon-alarm-1',
+                    title: 'Notification',
+                    message: 'Please wait until \n' + moment(minute).format('DD MMMM LTS') + ' finished',
+                }, {
+                    // settings
+                    element: 'body',
+                    type: "danger",
+                    allow_dismiss: true,
+                    placement: {
+                        from: "top",
+                        align: "center"
+                    },
+                    timer: 1000,
+                    delay: 5000,
+                    animate: {
+                        enter: 'animated fadeInDown',
+                        exit: 'animated fadeOutUp'
+                    },
+                    icon_type: 'class',
+                    template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
+                        '<button type="button" aria-hidden="true" class="close" data-notify="dismiss">×</button>' +
+                        '<span data-notify="icon"></span> ' +
+                        '<span data-notify="title">{1}</span> ' +
+                        '<span data-notify="message">{2}</span>' +
+                        '<div class="progress" data-notify="progressbar">' +
+                        '<div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>' +
+                        '</div>' +
+                        '<a href="{3}" target="{4}" data-notify="url"></a>' +
+                        '</div>'
+                });
 
 
                 setTimer = (minute * 1000);
                 $('#login').prop('disabled', true);
                 setTimeout(function () {
                     $('#login').prop('disabled', false);
+                    setCookie("log1", "", 0);
+                    setCookie("log2", "", 0);
+                    setCookie("log3", "", 0);
                     location.reload();
                 }, setTimer);
 
@@ -385,24 +426,58 @@ function Reset() {
 
 
 $(function () {
+    //debugger;
     var getDateNow = new Date();
     var getTimerLog = new Date(localStorage.setTimeLog);
     currTime = moment(getDateNow).format('DD MMMM LTS');
     getLogTime = moment(getTimerLog).format('DD MMMM LTS');
 
-    if (currTime > getLogTime ) {
-        console.log(currTime);
-        console.log(getLogTime);
+    if (cek3 == '') {
         $('#login').val('Sign In');
         $('#login').prop('disabled', false);
-        //setTimeout(function () {
-        //    location.reload();
-        //}, 2000);
     } else {
         console.log(currTime);
         console.log(getLogTime);
+        if (currTime > getLogTime) {
+            setCookie("log1", "", 0);
+            setCookie("log2", "", 0);
+            setCookie("log3", "", 0);
+            localStorage.setTimeLog = '';
+        }
         $('#login').prop('disabled', true);
         $('#login').val('Sign In');
+        $.notify({
+            // options
+            icon: 'flaticon-alarm-1',
+            title: 'Notification',
+            message: 'Please wait until <br>' + moment(getTimerLog).format('DD MMMM LTS') + ' finished',
+        }, {
+            // settings
+            element: 'body',
+            type: "danger",
+            allow_dismiss: true,
+            placement: {
+                from: "top",
+                align: "center"
+            },
+            timer: 1000,
+            delay: 5000,
+            animate: {
+                enter: 'animated fadeInDown',
+                exit: 'animated fadeOutUp'
+            },
+            icon_type: 'class',
+            template: '<div data-notify="container" class="col-xs-11 col-sm-5 alert alert-{0}" role="alert">' +
+                '<button type="button" aria-hidden="true" class="close" data-notify="dismiss">×</button>' +
+                '<span data-notify="icon"></span> ' +
+                '<span data-notify="title">{1}</span> ' +
+                '<span data-notify="message">{2}</span>' +
+                '<div class="progress" data-notify="progressbar">' +
+                '<div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>' +
+                '</div>' +
+                '<a href="{3}" target="{4}" data-notify="url"></a>' +
+                '</div>'
+        });
     }
 
 
