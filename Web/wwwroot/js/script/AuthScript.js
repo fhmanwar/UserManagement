@@ -214,6 +214,8 @@ function Login() {
 
 function Forgot() {
     //debugger;
+    $('#getLoad').show();
+    $('#login').prop('disabled', true);
     var validate = new Object();
     validate.Email = $('#Email').val();
     $.ajax({
@@ -224,6 +226,8 @@ function Forgot() {
         data: validate
     }).then((result) => {
         //debugger;
+        $('#login').prop('disabled', false);
+        $('#getLoad').hide();
         if (result.isSuccessStatusCode == true) {
             $.notify({
                 // options
@@ -304,6 +308,8 @@ function Forgot() {
 
 function Reset() {
     //debugger;
+    $('#getLoad').show();
+    $('#login').prop('disabled', true);
     if ($('#Password').val() == $('#confirmPass').val()) {
         const urlParams = new URLSearchParams(window.location.search);
         var validate = new Object();
@@ -317,6 +323,8 @@ function Reset() {
             data: validate
         }).then((result) => {
             //debugger;
+            $('#login').prop('disabled', false);
+            $('#getLoad').hide();
             if (result.isSuccessStatusCode == true) {
                 $.notify({
                     // options
