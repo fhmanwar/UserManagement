@@ -14,14 +14,20 @@
     <link href="~/css/handler/vendor.bundle.base.css" rel="stylesheet" />
     <link href="~/css/handler/style.css" rel="stylesheet" />
 
-    @*<link rel="stylesheet" href="~/css/atlantis.min.css">*@
     <link href="~/css/animated.css" rel="stylesheet" />
+    <link href="~/css/LoaderStyle.css" rel="stylesheet" />
 
 </head>
 <body>
 
     @RenderBody()
 
+    <div id="getLoad">
+        <div id="loader-wrapper">
+            <div id="loader"></div>
+
+        </div>
+    </div>
 
     <script src="~/js/handler/vendor.bundle.base.js"></script>
     <script src="~/js/handler/off-canvas.js"></script>

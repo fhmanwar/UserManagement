@@ -3,8 +3,13 @@ var cek1 = getCookie("log1");
 var cek2 = getCookie("log2");
 var cek3 = getCookie("log3");
 
+$(document).ready(function () {
+    $('#getLoad').hide();
+});
 function Login() {
     //debugger;
+    $('#getLoad').show();
+    $('#login').prop('disabled', true);
     var validate = new Object();
     validate.Email = $('#Email').val();
     validate.Password = $('#Password').val();
@@ -16,6 +21,8 @@ function Login() {
         data: validate
     }).then((result) => {
         //debugger;
+        $('#login').prop('disabled', false);
+        $('#getLoad').hide();
         if (result.status == true) {
             if (result.msg == "VerifyCode") {
                 $.notify({
