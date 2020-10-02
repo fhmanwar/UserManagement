@@ -42,6 +42,7 @@
     <!-- CSS Files -->
     <link rel="stylesheet" href="~/css/bootstrap.min.css">
     <link rel="stylesheet" href="~/css/atlantis.min.css">
+    @*<link href="~/css/LoaderStyle.css" rel="stylesheet" />*@
 
     @RenderSection("Style", required: false)
 </head>
@@ -107,23 +108,23 @@
                                                     </div>
                                                 </a>
                                                 @*<a class="col-6 col-md-4 p-0" href="#">
-                                                        <div class="quick-actions-item">
-                                                            <i class="flaticon-interface-1"></i>
-                                                            <span class="text">Create New Task</span>
-                                                        </div>
-                                                    </a>
-                                                    <a class="col-6 col-md-4 p-0" href="#">
-                                                        <div class="quick-actions-item">
-                                                            <i class="flaticon-list"></i>
-                                                            <span class="text">Completed Tasks</span>
-                                                        </div>
-                                                    </a>
-                                                    <a class="col-6 col-md-4 p-0" href="#">
-                                                        <div class="quick-actions-item">
-                                                            <i class="flaticon-file"></i>
-                                                            <span class="text">Create New Invoice</span>
-                                                        </div>
-                                                    </a>*@
+                                                    <div class="quick-actions-item">
+                                                        <i class="flaticon-interface-1"></i>
+                                                        <span class="text">Create New Task</span>
+                                                    </div>
+                                                </a>
+                                                <a class="col-6 col-md-4 p-0" href="#">
+                                                    <div class="quick-actions-item">
+                                                        <i class="flaticon-list"></i>
+                                                        <span class="text">Completed Tasks</span>
+                                                    </div>
+                                                </a>
+                                                <a class="col-6 col-md-4 p-0" href="#">
+                                                    <div class="quick-actions-item">
+                                                        <i class="flaticon-file"></i>
+                                                        <span class="text">Create New Invoice</span>
+                                                    </div>
+                                                </a>*@
                                             </div>
                                         </div>
                                     </div>
@@ -201,7 +202,7 @@
                             <li class="nav-item">
                                 <a data-toggle="collapse" href="#sidebarLayouts">
                                     <i class="fas fa-layer-group"></i>
-                                    <p>User Different Apps</p>
+                                    <p>User Apps</p>
                                     <span class="caret"></span>
                                 </a>
                                 <div class="collapse" id="sidebarLayouts">
@@ -280,6 +281,8 @@
         </div>
 
     </div>
+
+
     <!--   Core JS Files   -->
     <script src="~/js/Plugin/jquery.3.2.1.min.js"></script>
     <script src="~/js/Plugin/popper.min.js"></script>
@@ -328,8 +331,7 @@
             $('.nav a').click(function () {
                 $(this).parent().addClass('active').siblings().removeClass('active');
             });
-
-
+                        
             if (performance.navigation.type === 2) {
                 location.reload(true);
             }
