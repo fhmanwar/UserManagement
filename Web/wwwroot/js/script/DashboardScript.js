@@ -116,7 +116,7 @@ function getAllRole() {
 
 am4core.useTheme(am4themes_animated);
 
-var Pie = am4core.createFromConfig({
+var PieRole = am4core.createFromConfig({
     "innerRadius": "50%",
 
     "dataSource": {
@@ -125,6 +125,36 @@ var Pie = am4core.createFromConfig({
             "type": "JSONParser",
         },
         "reloadFrequency": 5000,
+    },
+
+    "exporting": {
+        "menu": {
+            "items": [{
+                "label": "...",
+                "menu": [
+                    {
+                        "label": "Image",
+                        "menu": [
+                            { "type": "png", "label": "PNG" },
+                            { "type": "jpg", "label": "JPG" },
+                            { "type": "pdf", "label": "PDF" }
+                        ]
+                    }, {
+                        "label": "Data",
+                        "menu": [
+                            { "type": "json", "label": "JSON" },
+                            { "type": "csv", "label": "CSV" },
+                            { "type": "xlsx", "label": "XLSX" },
+                            { "type": "html", "label": "HTML" },
+                            { "type": "pdfdata", "label": "PDF Data" }
+                        ]
+                    }, {
+                        "label": "Print", "type": "print"
+                    }
+                ]
+            }]
+        },
+        "filePrefix": "Pie_Chart_User_Department-" + moment().format("DD-MM-YYYY"),
     },
 
     // Create series
@@ -161,7 +191,7 @@ var Pie = am4core.createFromConfig({
 
 }, "pieURole", am4charts.PieChart);
 
-var Pie = am4core.createFromConfig({
+var PieDept = am4core.createFromConfig({
     "innerRadius": "50%",
 
     "dataSource": {
@@ -170,6 +200,36 @@ var Pie = am4core.createFromConfig({
             "type": "JSONParser",
         },
         "reloadFrequency": 5000,
+    },
+
+    "exporting": {
+        "menu": {
+            "items": [{
+                "label": "...",
+                "menu": [
+                    {
+                        "label": "Image",
+                        "menu": [
+                            { "type": "png", "label": "PNG" },
+                            { "type": "jpg", "label": "JPG" },
+                            { "type": "pdf", "label": "PDF" }
+                        ]
+                    }, {
+                        "label": "Data",
+                        "menu": [
+                            { "type": "json", "label": "JSON" },
+                            { "type": "csv", "label": "CSV" },
+                            { "type": "xlsx", "label": "XLSX" },
+                            { "type": "html", "label": "HTML" },
+                            { "type": "pdfdata", "label": "PDF Data" }
+                        ]
+                    }, {
+                        "label": "Print", "type": "print"
+                    }
+                ]
+            }]
+        },
+        "filePrefix": "Pie_Chart_User_Department-" + moment().format("DD-MM-YYYY"),
     },
 
     // Create series
@@ -205,3 +265,13 @@ var Pie = am4core.createFromConfig({
     "legend": {},
 
 }, "pieUDept", am4charts.PieChart);
+
+//function exportXLS() {
+//    PieDept.exporting.export("xlsx");
+//}
+//function exportPDF() {
+//    PieDept.exporting.export("pdf");
+//}
+//function exportPNG() {
+//    PieDept.exporting.export("png");
+//}

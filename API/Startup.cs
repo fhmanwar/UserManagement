@@ -38,6 +38,7 @@ namespace API
             services.AddScoped<DepartmentRepository>();
             services.AddScoped<ChartRepository>();
             services.AddScoped<AbsentRepository>();
+            services.AddScoped<AppsRepository>();
 
             services.AddScoped<AssetManageRepository>();
             services.AddScoped<ExamRepository>();

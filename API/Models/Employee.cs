@@ -24,6 +24,8 @@ namespace API.Models
 
         [ForeignKey("Department")]
         public string DepartmentId { get; set; }
+        [ForeignKey("App")]
+        public int? AppId { get; set; }
 
         public DateTimeOffset CreateDate { get; set; }
         public DateTimeOffset UpdateDate { get; set; }
@@ -32,5 +34,6 @@ namespace API.Models
         
         public User User { get; set; }
         public Department Department { get; set; }
+        public App App { get; set; }
     }
 }

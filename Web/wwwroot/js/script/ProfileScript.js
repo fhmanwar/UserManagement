@@ -187,7 +187,8 @@ function GetProfile() {
 }
 
 function Update() {
-    debugger;
+    //debugger;
+    $('#getLoad').show();
     var Data = new Object();
     if ($('#Image').val() == "") {
         if ($('#Pass').val() != "") {
@@ -216,6 +217,7 @@ function Update() {
                     data: Data
                 }).then((result) => {
                     //debugger;
+                    $('#getLoad').hide();
                     if (result.isSuccessStatusCode == true) {
                         $.notify({
                             // options
@@ -318,6 +320,7 @@ function Update() {
                 dataType: "JSON",
                 data: Data
             }).then((result) => {
+                $('#getLoad').hide();
                 //debugger;
                 if (result.isSuccessStatusCode == true) {
                     $.notify({
@@ -420,6 +423,7 @@ function Update() {
                                     dataType: "JSON",
                                     data: Data
                                 }).then((result) => {
+                                    $('#getLoad').hide();
                                     //debugger;
                                     if (result.isSuccessStatusCode == true) {
                                         $.notify({
@@ -500,7 +504,7 @@ function Update() {
                                 }, 2000);
                             }
                         } else {
-                            debugger;
+                            //debugger;
                             Data.Id = $('#Id').val();
                             Data.NIK = $('#NIK').val();
                             Data.Email = $('#Email').val();
@@ -524,6 +528,7 @@ function Update() {
                                 data: Data
                             }).then((result) => {
                                 //debugger;
+                                $('#getLoad').hide();
                                 if (result.isSuccessStatusCode == true) {
                                     $.notify({
                                         // options

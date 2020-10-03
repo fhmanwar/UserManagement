@@ -45,6 +45,8 @@ namespace API.ViewModels
         public string RoleName { get; set; }
         public string DepartmentID { get; set; }
         public string DepartmentName { get; set; }
+        public string AppsID { get; set; }
+        public string AppsName { get; set; }
     }
 
     public class ForgotVM
@@ -66,4 +68,15 @@ namespace API.ViewModels
         public DateTimeOffset InsDate { get; set; }
         public DateTimeOffset UpdDate { get; set; }
     }
+
+    public class AppsVM
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public DateTimeOffset InsAt { get; set; }
+        public DateTimeOffset UpdAt { get; set; }
+        public DateTimeOffset DelAt { get; set; }
+        public bool isDelete { get; set; }
+    }
+
 }

@@ -204,4 +204,73 @@ namespace API.Repository.Data
         }
 
     }
+
+    public class AppsRepository
+    {
+        IConfiguration _configuration;
+        DynamicParameters parameters = new DynamicParameters();
+        public AppsRepository(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
+        public async Task<IEnumerable<AppsVM>> getAll()
+        {
+            using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("myConnection")))
+            {
+                var procName = "SP_GetAll_Apps";
+                var getAll = await connection.QueryAsync<AppsVM>(procName, commandType: CommandType.StoredProcedure);
+                return getAll;
+            }
+        }
+
+        public AppsVM getID(int id)
+        {
+            using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("myConnection")))
+            {
+                var procName = "SP_GetID_Apps";
+                parameters.Add("id", id);
+                var getId = connection.Query<AppsVM>(procName, parameters, commandType: CommandType.StoredProcedure).SingleOrDefault();
+                return getId;
+            }
+        }
+
+        public int Create(AppsVM dataVM)
+        {
+            using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("myConnection")))
+            {
+                var procName = "SP_Create_Apps";
+                parameters.Add("name", dataVM.Name);
+                parameters.Add("insDate", DateTimeOffset.Now);
+                var insert = connection.Execute(procName, parameters, commandType: CommandType.StoredProcedure);
+                return insert;
+            }
+        }
+
+        public int Update(AppsVM dataVM, int id)
+        {
+            using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("myConnection")))
+            {
+                var procName = "SP_Update_Apps";
+                parameters.Add("Id", id);
+                parameters.Add("name", dataVM.Name);
+                parameters.Add("updDate", DateTimeOffset.Now);
+                var Edit = connection.Execute(procName, parameters, commandType: CommandType.StoredProcedure);
+                return Edit;
+            }
+        }
+
+        public int Delete(int id)
+        {
+            using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("myConnection")))
+            {
+                var procName = "SP_Delete_Apps";
+                parameters.Add("id", id);
+                parameters.Add("DelDate", DateTimeOffset.Now);
+                var Delete = connection.Execute(procName, parameters, commandType: CommandType.StoredProcedure);
+                return Delete;
+            }
+        }
+
+    }
 }

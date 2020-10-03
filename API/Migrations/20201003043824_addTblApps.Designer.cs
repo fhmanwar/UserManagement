@@ -4,14 +4,16 @@ using API.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace API.Migrations
 {
     [DbContext(typeof(MyContext))]
-    partial class MyContextModelSnapshot : ModelSnapshot
+    [Migration("20201003043824_addTblApps")]
+    partial class addTblApps
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,7 +40,7 @@ namespace API.Migrations
                     b.ToTable("TB_T_Absent");
                 });
 
-            modelBuilder.Entity("API.Models.App", b =>
+            modelBuilder.Entity("API.Models.Apps", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -56,7 +58,7 @@ namespace API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TB_M_App");
+                    b.ToTable("TB_M_Apps");
                 });
 
             modelBuilder.Entity("API.Models.Department", b =>
@@ -84,8 +86,6 @@ namespace API.Migrations
                     b.Property<string>("UserId");
 
                     b.Property<string>("Address");
-
-                    b.Property<int?>("AppId");
 
                     b.Property<string>("AssignmentSite");
 
@@ -118,8 +118,6 @@ namespace API.Migrations
                     b.Property<bool>("isDelete");
 
                     b.HasKey("UserId");
-
-                    b.HasIndex("AppId");
 
                     b.HasIndex("DepartmentId");
 
@@ -207,10 +205,6 @@ namespace API.Migrations
 
             modelBuilder.Entity("API.Models.Employee", b =>
                 {
-                    b.HasOne("API.Models.App", "App")
-                        .WithMany()
-                        .HasForeignKey("AppId");
-
                     b.HasOne("API.Models.Department", "Department")
                         .WithMany()
                         .HasForeignKey("DepartmentId");

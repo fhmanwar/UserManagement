@@ -45,4 +45,12 @@ namespace API.ViewModels
         public DateTimeOffset InsAt { get; set; }
         public DateTimeOffset UpdAt { get; set; }
     }
+
+    public class GetAppsVM
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public DateTimeOffset InsAt { get; set; }
+        public DateTimeOffset UpdAt { get; set; }
+    }
 }

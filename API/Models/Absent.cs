@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace API.Models
 {
-    [Table("TB_M_Absent")]
+    [Table("TB_T_Absent")]
     public class Absent
     {
         [Key]

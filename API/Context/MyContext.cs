@@ -17,6 +17,7 @@ namespace API.Context
         public DbSet<Log> LogActivities { get; set; }
         public DbSet<Department> Departments { get; set; }
         public DbSet<Absent> Absents { get; set; }
+        public DbSet<App> Apps { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

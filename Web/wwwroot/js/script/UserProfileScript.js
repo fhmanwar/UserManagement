@@ -1,7 +1,7 @@
 ﻿var arrData = [];
 
 $(document).ready(function () {
-
+    $('#getLoad').hide();
     $.ajax({
         url: "/GetProfile/",
         type: "GET",
@@ -160,7 +160,9 @@ function GetProfile() {
 }
 
 function Update() {
-    //debugger;
+    debugger;
+    $('#getLoad').show();
+
     var Data = new Object();
     if ($('#Image').val() == "") {
         if ($('#Pass').val() != "") {
@@ -189,6 +191,7 @@ function Update() {
                     data: Data
                 }).then((result) => {
                     //debugger;
+                    $('#getLoad').hide();
                     if (result.isSuccessStatusCode == true) {
                         $.notify({
                             // options
@@ -292,6 +295,7 @@ function Update() {
                 data: Data
             }).then((result) => {
                 //debugger;
+                $('#getLoad').hide();
                 if (result.isSuccessStatusCode == true) {
                     $.notify({
                         // options
@@ -394,6 +398,7 @@ function Update() {
                                     data: Data
                                 }).then((result) => {
                                     //debugger;
+                                    $('#getLoad').hide();
                                     if (result.isSuccessStatusCode == true) {
                                         $.notify({
                                             // options
@@ -497,6 +502,7 @@ function Update() {
                                 data: Data
                             }).then((result) => {
                                 //debugger;
+                                $('#getLoad').hide();
                                 if (result.isSuccessStatusCode == true) {
                                     $.notify({
                                         // options

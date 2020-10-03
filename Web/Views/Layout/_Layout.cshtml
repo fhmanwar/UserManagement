@@ -42,7 +42,7 @@
     <!-- CSS Files -->
     <link rel="stylesheet" href="~/css/bootstrap.min.css">
     <link rel="stylesheet" href="~/css/atlantis.min.css">
-    @*<link href="~/css/LoaderStyle.css" rel="stylesheet" />*@
+    <link href="~/css/LoaderStyle.css" rel="stylesheet" />
 
     @RenderSection("Style", required: false)
 </head>
@@ -271,6 +271,14 @@
             <div class="content">
                 @RenderBody()
             </div>
+             
+            <div id="getLoad">
+                <div id="loader-wrapper">
+                    <div id="loader"></div>
+
+                </div>
+            </div>
+
             <footer class="footer">
                 <div class="container-fluid">
                     <div class="copyright">
@@ -331,7 +339,9 @@
             $('.nav a').click(function () {
                 $(this).parent().addClass('active').siblings().removeClass('active');
             });
-                        
+
+            $('#getLoad').hide();
+
             if (performance.navigation.type === 2) {
                 location.reload(true);
             }
