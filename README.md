@@ -57,6 +57,43 @@
             }
         ```
     
+    - Apps : 
+        - `GET` All : `http://{host}/api/divisions/`
+        - `GET` ID : `http://{host}/api/divisions/{id}/`
+        - `POST` : `http://{host}/api/divisions/{id}/`
+            ```json
+                {
+                    "Name": "{Division Name}",
+                    "Session": "{Session who did this method }",
+                }
+            ```
+        - `PUT` : `http://{host}/api/divisions/{id}/`
+            ```json
+                {
+                    "Name": "{Division Name}",
+                    "Session": "{Session who did this method }",
+                }
+            ```
+        - `DELETE` : `http://{host}/api/divisions/{id}?session={empId}`
+
+    - Absents : 
+        - `GET` All : `http://{host}/api/absents/`
+        - `GET` ID : `http://{host}/api/absents/{id}/`
+        - `POST` : `http://{host}/api/absents/{id}/`
+            ```json
+                {
+                    "UserId": "{Division Name}",
+                    "InsDate": "{Session who did this method }",
+                }
+            ```
+        - `PUT` : `http://{host}/api/absents/{id}/`
+            ```json
+                {
+                    "UserId": "{Division Name}",
+                    "InsDate": "{Session who did this method }",
+                }
+            ```
+    
 
 
 3. Manually :
@@ -152,7 +189,7 @@
         "Email": "{Email User}",
     }
 ```
-- `POST` Login Asset Management: `http://{host}/api/auths/login`
+- `POST` Login Asset Management: `http://{host}/api/assetmanages/login`
 
 ```json
     {
@@ -172,7 +209,7 @@
         "Email": "{Email User}",
     }
 ```
-- `POST` Login Exam Online: `http://{host}/api/auths/login`
+- `POST` Login Exam Online: `http://{host}/api/exams/login`
 
 ```json
     {
@@ -192,7 +229,7 @@
         "Email": "{Email User}",
     }
 ```
-- `POST` Login Reimbursement Parking: `http://{host}/api/auths/login`
+- `POST` Login Reimbursement Parking: `http://{host}/api/reimburs/login`
 
 ```json
     {
@@ -212,7 +249,7 @@
         "Email": "{Email User}",
     }
 ```
-- `POST` Login Interview & Placement: `http://{host}/api/auths/login`
+- `POST` Login Interview & Placement: `http://{host}/api/interviews/login`
 
 ```json
     {
